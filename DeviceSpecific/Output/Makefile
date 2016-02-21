@@ -39,8 +39,8 @@ LDFLAGS	    = -g
 #########################################################################################################
 
 
-include $(PROJECT_BASE)/Firmware/Build.mk
-include $(SOURCE_LIBRARY)/Implementations/asn1der/Build.mk
+include $(PROJECT_BASE)/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/UARTTransmitter/Build.mk
 
 
 #
