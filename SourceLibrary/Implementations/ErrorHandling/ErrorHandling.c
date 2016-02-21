@@ -6,19 +6,18 @@
 //
 
 
-#ifndef __UARTTRANSMITTER_H__
-#define __UARTTRANSMITTER_H__
 
 
 
-#include "EventQueue.h"
+#include "Common.h"
 
 
-void uartISR();
-void UARTTransmitByte( uint8_t byte );
-
-#endif
 
 
+
+void PANIC()
+{
+    while(true);
+}
 
 

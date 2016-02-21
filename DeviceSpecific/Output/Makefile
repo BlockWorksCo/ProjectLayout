@@ -1,5 +1,8 @@
 #
-#
+# Copyright (C) BlockWorks Consulting Ltd - All Rights Reserved.
+# Unauthorized copying of this file, via any medium is strictly prohibited.
+# Proprietary and confidential.
+# Written by Steve Tickle <Steve@BlockWorks.co>, November 2015.
 #
 
 
@@ -32,22 +35,23 @@ ECHO_GREEN		= echo -e "\033[0;32m"
 #
 # Build flags.
 #
-CFLAGS      = -O2 -g 
-LDFLAGS	    = -g
+CFLAGS 			= -O2 -g 
+LDFLAGS			= -g
 
 
 #########################################################################################################
 
 
 include $(PROJECT_BASE)/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/EventQueue/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/UARTTransmitter/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/ErrorHandling/Build.mk
 
 
 #
-# Note: this line is only here because it *MUST* appear after -lZecc_sect283k1 otherwise you get multiple definitions
-# of memset & memcpy as they are alse defined in libZecc_sect283k1! argh....
 #
-LIBS		+= -lcr_c -lcr_eabihelpers -lcr_nohost -lnosys
+#
+LIBS		+= -lc
 
 
 #########################################################################################################
@@ -95,7 +99,6 @@ Main.elf: $(OBJS)
 Main.bin: Main.elf
 	@ $(ECHO) Creating binary image $@
 	@ $(OBJCOPY) -S -O ihex $< Main.hex
-	@ $(HEXSPLIT) Main.hex $(HEX2BIN)
 
 #########################################################################################################
 

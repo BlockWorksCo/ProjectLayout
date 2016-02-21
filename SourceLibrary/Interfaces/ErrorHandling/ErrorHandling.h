@@ -6,19 +6,14 @@
 //
 
 
-#ifndef __UARTTRANSMITTER_H__
-#define __UARTTRANSMITTER_H__
+
+#ifndef __ERRORHANDLING_H__
+#define __ERRORHANDLING_H__
 
 
 
-#include "EventQueue.h"
 
+void PANIC();
 
-void uartISR();
-void UARTTransmitByte( uint8_t byte );
 
 #endif
-
-
-
-

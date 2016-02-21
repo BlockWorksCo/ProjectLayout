@@ -6,18 +6,17 @@
 //
 
 
-#ifndef __UARTTRANSMITTER_H__
-#define __UARTTRANSMITTER_H__
+#ifndef __COMMON_H__
+#define __COMMON_H__
+
+#include <stdint.h>
+#include <stdbool.h>
 
 
-
-#include "EventQueue.h"
-
-
-void uartISR();
-void UARTTransmitByte( uint8_t byte );
+#define PRIVATE     static
 
 #endif
+
 
 
 
