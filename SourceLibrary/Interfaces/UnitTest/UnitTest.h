@@ -11,7 +11,7 @@
 #define __UNITTEST_H__
 
 
-#include "Platform.h"
+#include "Common.h"
 
 #define MAX_TESTS           (128)
 

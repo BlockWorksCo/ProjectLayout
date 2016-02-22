@@ -11,7 +11,6 @@
 #
 .DEFAULT_GOAL := all
 .SUFFIXES: .c .h .o
-SHELL		= sh
 
 
 #########################################################################################################
@@ -19,6 +18,7 @@ SHELL		= sh
 #
 # Tools
 #
+SHELL     		= sh
 CPPC      		= arm-none-eabi-g++
 CC        	    = arm-none-eabi-gcc
 LD        		= arm-none-eabi-gcc
@@ -35,7 +35,7 @@ ECHO_GREEN		= echo -e "\033[0;32m"
 #
 # Build flags.
 #
-CFLAGS 			= -O2 -g 
+CFLAGS 			= -O2 -g --std=c99
 LDFLAGS			= -g -nostdlib
 
 
@@ -46,6 +46,15 @@ include $(PROJECT_BASE)/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/EventQueue/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/UARTTransmitter/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/ErrorHandling/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/UARTReceiver/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/Debugger/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/EventQueue/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/BlockedEvents/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/FileStorage/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/PersistentStorage/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/HashTable/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/I2CMaster/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/KeyValueStore/Build.mk
 
 
 #
@@ -93,12 +102,6 @@ Main.elf: $(OBJS)
 	@ $(LD) $(LDFLAGS) -Xlinker -Map=$@.map -o $@ $^ $(LIBS)
 	@ $(SIZE) -d $@
 
-#
-# Split the .elf into memory regions and then recombine into a .bin that the bootloader understands.
-#
-Main.bin: Main.elf
-	@ $(ECHO) Creating binary image $@
-	@ $(OBJCOPY) -S -O ihex $< Main.hex
 
 #########################################################################################################
 

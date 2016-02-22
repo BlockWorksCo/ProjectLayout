@@ -20,7 +20,7 @@ void KeyValueStoreErased()
     WriteFileBlock( 1, 0, (uint8_t*)&keyValueData, sizeof(keyValueData), KeyValueStoreBackedUp );
 }
 
-void KeyValueStoreWritten( uint32_t key )
+void KeyValueStoreWritten( Key key )
 {
     //
     // Write to persistent storage.

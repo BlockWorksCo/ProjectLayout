@@ -10,7 +10,7 @@
 #define __DEBUGGER_H__
 
 
-#include "Platform.h"
+#include "Common.h"
 
 #define BREAKPOINT()  debugger()
 

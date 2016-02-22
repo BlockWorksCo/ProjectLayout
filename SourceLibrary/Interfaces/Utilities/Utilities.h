@@ -13,8 +13,11 @@
 #ifndef __UTILITIES_H__
 #define __UTILITIES_H__
 
-#include "Platform.h"
+#include "Common.h"
 
+
+
+//#define offsetof(st, m)         ((size_t)(&((st *)0)->m))
 
 #define NUMBER_OF_ELEMENTS(a)   (sizeof(a)/sizeof(a[0]))
 #define TRACE                   printf("<%s:%d>\n",__FILE__,__LINE__)

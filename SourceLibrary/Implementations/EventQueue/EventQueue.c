@@ -10,6 +10,7 @@
 #include "Common.h"
 #include "Queue.h"
 #include "EventQueue.h"
+#include "ErrorHandling.h"
 
 DECLARE_QUEUE( HandlerQueue,            Handler, 16);
 DECLARE_QUEUE( InterruptHandlerQueue,   Handler, 16);

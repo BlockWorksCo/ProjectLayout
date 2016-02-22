@@ -9,9 +9,9 @@
 
 
 #include "I2CMaster.h"
-#include "Platform.h"
-#include "Utilities.h"
+#include "ErrorHandling.h"
 #include "EventQueue.h"
+#include "Utilities.h"
 
 
 
@@ -211,7 +211,7 @@ void WriteEngine()
                 DRIVE_SDA();
 
                 volatile uint8_t bitValue = byte&(0x80>>bitInByte);
-DPRINTF("                        bn=%d byte=%02x\n",bitInByte,byte);                
+//DPRINTF("                        bn=%d byte=%02x\n",bitInByte,byte);                
                 if( bitValue != 0 )
                 {
                     SET_SDA();
@@ -437,7 +437,7 @@ void I2CDisplay()
             sclText     = "----";
         } 
 
-        DPRINTF("%03d) %6s %6s \n",state, sclText, sdaText);
+        //DPRINTF("%03d) %6s %6s \n",state, sclText, sdaText);
         sdaOld = sda;
         sclOld = scl;
     }    

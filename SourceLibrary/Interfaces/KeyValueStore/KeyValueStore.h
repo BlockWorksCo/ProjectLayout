@@ -10,7 +10,8 @@
 #ifndef __KEYALUESTORE_H__
 #define __KEYALUESTORE_H__
 
-#include "Platform.h"
+#include "Common.h"
+#include "Utilities.h"
 
 
 #define DECLARE_KEY_VALUE_STORAGE( type, name )     type name##Storage
@@ -45,7 +46,7 @@ typedef enum
 
 
 void KeyValueStoreWritten( Key key );
-bool KeyValueValidate( Key key);
+bool KeyValueValidate( Key key, void* _value )
 
 #endif
 

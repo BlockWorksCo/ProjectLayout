@@ -7,7 +7,7 @@
 
 
 #include "HashTable.h"
-#include "Utilities.h"
+#include "ErrorHandling.h"
 
 
 HashTableEntry  table[HASH_TABLE_SIZE][HASH_TABLE_MAX_COLLISIONS]   = {0};

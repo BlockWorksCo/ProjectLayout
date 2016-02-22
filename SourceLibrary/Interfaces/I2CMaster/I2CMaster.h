@@ -11,7 +11,7 @@
 #ifndef __I2CMASTER_H__
 #define __I2CMASTER_H__
 
-#include "Platform.h"
+#include "Common.h"
 #include "EventQueue.h"
 
 

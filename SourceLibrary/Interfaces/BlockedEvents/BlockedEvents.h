@@ -13,7 +13,7 @@
 #ifndef __BLOCKEDEVENTS_H__
 #define __BLOCKEDEVENTS_H__
 
-#include "Platform.h"
+#include "Common.h"
 #include "EventQueue.h"
 
 

@@ -11,7 +11,7 @@
 #ifndef __PERSISTENTSTORAGE_H__
 #define __PERSISTENTSTORAGE_H__
 
-#include "Platform.h"
+#include "Common.h"
 #include "EventQueue.h"
 
 

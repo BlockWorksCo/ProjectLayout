@@ -8,8 +8,7 @@
 
 
 #include "UnitTest.h"
-#include "Platform.h"
-#include "Utilities.h"
+#include "ErrorHandling.h"
 
 
 //
