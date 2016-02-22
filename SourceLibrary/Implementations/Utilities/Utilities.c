@@ -13,20 +13,14 @@
 
 
 
-// Utilities --------------------------------------------------------------------------------
-
-void PANIC()
-{
-    printf("PANIC!\n");
-    while(true);
-}
 
 uint32_t CurrentTimestamp_ms()
 {
-    clock_t     value   = clock();
-    const uint32_t  clocksPerMs     = CLOCKS_PER_SEC/1000;
+    //clock_t     value   = clock();
+    //const uint32_t  clocksPerMs     = CLOCKS_PER_SEC/1000;
 
-    return value/clocksPerMs;
+    //return value/clocksPerMs;
+    return 0;
 }
 
 

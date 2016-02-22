@@ -10,6 +10,7 @@
 
 #include "ErrorHandling.h"
 #include "PredicatedEvents.h"
+#include "Utilities.h"
 
 
 struct
