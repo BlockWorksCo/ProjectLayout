@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdarg.h>
+#include <string.h>
 
 
 #define PRIVATE     static
