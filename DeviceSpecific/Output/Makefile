@@ -43,6 +43,7 @@ LDFLAGS			= -g -nostdlib
 
 
 include $(PROJECT_BASE)/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/MemoryPool/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/EventQueue/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/UARTTransmitter/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/ErrorHandling/Build.mk
@@ -54,7 +55,7 @@ include $(SOURCE_LIBRARY)/Implementations/FileStorage/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/PersistentStorage/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/HashTable/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/I2CMaster/Build.mk
-#include $(SOURCE_LIBRARY)/Implementations/KeyValueStore/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/KeyValueStore/Build.mk
 #include $(SOURCE_LIBRARY)/Implementations/LogStorage/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/PredicatedEvents/Build.mk
 #include $(SOURCE_LIBRARY)/Implementations/UnitTest/Build.mk

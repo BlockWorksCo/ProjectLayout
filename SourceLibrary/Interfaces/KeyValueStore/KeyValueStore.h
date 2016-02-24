@@ -16,8 +16,8 @@
 
 #define DECLARE_KEY_VALUE_STORAGE( type, name )     type name##Storage
 #define DECLARE_KEY( name )                         name = offsetof( KeyValueData, name##Storage )
-#define SET_KEY_VALUE( key, value )                 if(KeyValueValidate(key) == true) keyValueData.key##Storage = value;KeyValueStoreWritten(key)
-#define GET_KEY_VALUE( key )                        keyValueData.key##Storage 
+#define SET_KEY_VALUE( k, v )                       if(KeyValueValidate(k) == true) keyValueData.key##Storage = value;KeyValueStoreWritten(k)
+#define GET_KEY_VALUE( k )                          keyValueData.k##Storage 
 
 typedef struct
 {

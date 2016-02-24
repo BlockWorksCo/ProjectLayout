@@ -6,19 +6,24 @@
 //
 
 
+#include "EventQueue.h"
 #include "KeyValueStore.h"
 #include "FileStorage.h"
 
 KeyValueData keyValueData;
 
+
+
 void KeyValueStoreBackedUp()
 {
 }
+
 
 void KeyValueStoreErased()
 {
     WriteFileBlock( 1, 0, (uint8_t*)&keyValueData, sizeof(keyValueData), KeyValueStoreBackedUp );
 }
+
 
 void KeyValueStoreWritten( Key key )
 {
@@ -28,6 +33,7 @@ void KeyValueStoreWritten( Key key )
     //
     EraseFileBlock( 1, 0, KeyValueStoreErased );
 }
+
 
 bool KeyValueValidate( Key key, void* _value )
 {
