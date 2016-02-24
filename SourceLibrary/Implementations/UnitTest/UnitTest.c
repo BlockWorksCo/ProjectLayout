@@ -10,6 +10,7 @@
 #include "UnitTest.h"
 #include "Utilities.h"
 #include "ErrorHandling.h"
+#include "TextFormatter.h"
 
 
 //
@@ -61,7 +62,7 @@ void UnitTestResultPrintf( char* format, ...)
     //
     va_start(vaList, format);
     memset(&text[0], 0, sizeof(text));
-    vsprintf(&text[0], format, vaList );
+    //vsprintf(&text[0], format, vaList );
     va_end(vaList);
 
     //
