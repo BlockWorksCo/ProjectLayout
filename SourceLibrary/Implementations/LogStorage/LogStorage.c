@@ -7,6 +7,7 @@
 
 
 #include "LogStorage.h"
+#include "FileStorage.h"
 
 #define LOG_ENTRY_SIZE      (128)
 #define LOG_FILE_NUMBER     (1)

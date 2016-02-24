@@ -14,6 +14,7 @@
 
 
 #include "Common.h"
+#include "EventQueue.h"
 
 void WriteLog( uint8_t* data, Handler completionHandler );
 void ReadLog( uint8_t* data, Handler completionHandler );

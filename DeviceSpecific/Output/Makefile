@@ -56,7 +56,7 @@ include $(SOURCE_LIBRARY)/Implementations/PersistentStorage/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/HashTable/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/I2CMaster/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/KeyValueStore/Build.mk
-#include $(SOURCE_LIBRARY)/Implementations/LogStorage/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/LogStorage/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/PredicatedEvents/Build.mk
 #include $(SOURCE_LIBRARY)/Implementations/UnitTest/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/Utilities/Build.mk
