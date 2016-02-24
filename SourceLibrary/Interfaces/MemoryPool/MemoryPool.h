@@ -15,7 +15,9 @@
 #define MEMORYPOOL(name, size, numberOfElements)                \
 typedef struct                                                  \
 {                                                               \
+    uint32_t    bottomCanary;                                   \
     uint8_t     data[size];                                     \
+    uint32_t    topCanary;                                      \
     bool        allocated;                                      \
 } PoolElement_##name;                                           \
 PoolElement_##name  pool##name[numberOfElements];               \
@@ -25,6 +27,8 @@ void* AllocateFromPool_##name()                                 \
     {                                                           \
         if(pool##name[i].allocated == false)                    \
         {                                                       \
+            pool##name[i].bottomCanary     = 0x0123abcd;        \
+            pool##name[i].bottomCanary     = 0xabcd0123;        \
             pool##name[i].allocated     = true;                 \
             return (void*)&pool##name[i].data;                  \
         }                                                       \
