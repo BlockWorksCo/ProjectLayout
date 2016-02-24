@@ -46,7 +46,7 @@ typedef enum
 
 
 void KeyValueStoreWritten( Key key );
-bool KeyValueValidate( Key key, void* _value )
+bool KeyValueValidate( Key key, void* _value );
 
 #endif
 

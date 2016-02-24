@@ -13,7 +13,6 @@
 KeyValueData keyValueData;
 
 
-
 void KeyValueStoreBackedUp()
 {
 }
@@ -42,11 +41,14 @@ bool KeyValueValidate( Key key, void* _value )
     switch( key )
     {
         case Value1:
+        {
             uint32_t*   value   = (uint32_t*)_value;
             if( (*value >= 0) && (*value < 10) )
             {
                 returnValue     = true;
             }
+            break;            
+        }
 
         default:
             PANIC();
@@ -55,3 +57,6 @@ bool KeyValueValidate( Key key, void* _value )
 
     return returnValue;
 }
+
+
+
