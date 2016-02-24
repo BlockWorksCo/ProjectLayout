@@ -21,7 +21,11 @@ void main()
 {
     void*   a   = AllocateFromPool_Small();    
     void*   b   = AllocateFromPool_Medium();    
-    void*   c   = AllocateFromPool_Large();    
+    void*   c   = AllocateFromPool_Large();
+
+    ReleaseToPool_Small( a );    
+    ReleaseToPool_Medium( b );    
+    ReleaseToPool_Large( c );    
 }
 
 
