@@ -15,7 +15,8 @@ INCLUDES	+=	-I$(SOURCE_LIBRARY)/Implementations/TextFormatter \
 #
 # Objects to build.
 #
-OBJS		+=	TextFormatter.o
+OBJS		+=	TextFormatter.o \
+    		  	vsnprintf.o
     		  		
 
 #

@@ -15,6 +15,7 @@
 
 #include "Common.h"
 
+void FormatTextFromVaList(char* output, uint32_t numberOfBytesInOutput, char* format, va_list vaList );
 void FormatText(char* output, uint32_t numberOfBytesInOutput, char* format, ...);
 
 

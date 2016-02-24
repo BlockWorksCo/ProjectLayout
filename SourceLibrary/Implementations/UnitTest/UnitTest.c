@@ -61,8 +61,7 @@ void UnitTestResultPrintf( char* format, ...)
     // Form the text to store.
     //
     va_start(vaList, format);
-    memset(&text[0], 0, sizeof(text));
-    //vsprintf(&text[0], format, vaList );
+    FormatTextFromVaList( &text[0], sizeof(text), format, vaList );
     va_end(vaList);
 
     //
