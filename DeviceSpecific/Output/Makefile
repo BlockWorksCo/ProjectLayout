@@ -63,6 +63,7 @@ include $(SOURCE_LIBRARY)/Implementations/Utilities/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/DebugText/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/Safety/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/TextFormatter/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/BlockDevice/Build.mk
 
 
 #
