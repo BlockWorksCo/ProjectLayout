@@ -21,6 +21,7 @@ typedef struct
     uint8_t     data[BLOCK_SIZE];
     uint32_t    transactionID;
     uint32_t    offset;
+    bool        discardable;
 
 } BlockCacheElement;
 
@@ -29,10 +30,10 @@ typedef struct
 uint8_t             blockDeviceData[1024*16];
 BlockCacheElement   blockCache[BLOCKS_IN_CACHE]     =
 {
-    {.offset    = 0xffffffff},
-    {.offset    = 0xffffffff},
-    {.offset    = 0xffffffff},
-    {.offset    = 0xffffffff},
+    {.offset    = 0xffffffff, .discardable  = true},
+    {.offset    = 0xffffffff, .discardable  = true},
+    {.offset    = 0xffffffff, .discardable  = true},
+    {.offset    = 0xffffffff, .discardable  = true},
 };
 
 
@@ -58,21 +59,24 @@ uint32_t CacheBlockForOffset( uint32_t offset )
     return cacheIndex;
 }
 
-//
-//
-//
 
+//
+// Search for a cache entry that is either unused or discardable and add the specified data
+// in its place.
+//
 uint32_t AddToCache( uint32_t transactionID, uint32_t offset, uint8_t* data)
 {
     uint32_t    blockOffset     = offset / BLOCK_SIZE;
     uint32_t    cacheIndex      = BLOCKS_IN_CACHE;
 
+
     for(uint32_t i=0; i<NUMBER_OF_ELEMENTS(blockCache); i++)
     {
-        if( blockCache[i].offset == 0xffffffff )
+        if( (blockCache[i].offset == 0xffffffff) || (blockCache[i].discardable == true) )
         {
             blockCache[i].offset            = blockOffset;
             blockCache[i].transactionID     = transactionID;
+            blockCache[i].discardable       = true;
             memcpy( &blockCache[i].data[0], data, BLOCK_SIZE );
 
             cacheIndex  = i;
@@ -85,24 +89,27 @@ uint32_t AddToCache( uint32_t transactionID, uint32_t offset, uint8_t* data)
 
 
 //
-//
+// Write all cache entries for the specified transaction that are *not* discardable to the device.
 //
 void FlushCache( uint32_t transactionID )
 {
     for(uint32_t i=0; i<NUMBER_OF_ELEMENTS(blockCache); i++)
     {
-        if( blockCache[i].transactionID == transactionID )
+        if( (blockCache[i].transactionID == transactionID) && (blockCache[i].discardable == false) )
         {
             //
             // Write to the device.
             //
             memcpy( &blockDeviceData[blockCache[i].offset], &blockCache[i].data[0], BLOCK_SIZE );
 
-            blockCache[i].offset    = 0xffffffff;
+            blockCache[i].offset        = 0xffffffff;
+            blockCache[i].discardable   = true;
             break;
         }
     }
 }
+
+
 
 
 
@@ -119,20 +126,25 @@ void WriteToBlockDeviceRegion( uint32_t transactionID, uint32_t offset, uint8_t*
         //
         memcpy( &blockCache[cacheIndex].data[0], data, numberOfBytes );
 
+        //
+        // This cache entry is now not discardable as it needs syncing to FLASH.
+        //
+        blockCache[cacheIndex].discardable  = false;
     }
     else
     {
         //
-        // Write thru to the device.
+        // Add it to the cache if we can...
         //
-        memcpy( &blockDeviceData[offset], data, numberOfBytes );
-
-        //
-        // Add it to the cache if we can.
-        //
-        AddToCache( transactionID, offset, data );
+        cacheIndex     = AddToCache( transactionID, offset, data );
+        if(cacheIndex != BLOCKS_IN_CACHE)
+        {
+            //
+            // ...otherwise write thru to the device.
+            //
+            memcpy( &blockDeviceData[offset], data, numberOfBytes );
+        }
     }
-
 }
 
 
@@ -157,9 +169,10 @@ void ReadFromBlockDeviceRegion( uint32_t transactionID, uint32_t offset, uint8_t
         memcpy( data, &blockDeviceData[offset], numberOfBytes );
 
         //
-        // Add it to the cache if we can.
+        // Add it to the cache if we can, but mark it as discardable as this is not a dirty entry.
         //
-        AddToCache( transactionID, offset, data );
+        cacheIndex  = AddToCache( transactionID, offset, data );
+        blockCache[cacheIndex].discardable  = true;
     }
 }
 
