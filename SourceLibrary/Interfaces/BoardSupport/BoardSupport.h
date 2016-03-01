@@ -31,6 +31,8 @@ typedef struct
 extern CoreServicesBridge*     bridge;
 
 
+
+uint32_t CoreNumber();
 void BoardSupportInitialise();
 
 #endif

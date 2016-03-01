@@ -33,6 +33,10 @@ uint8_t     usrStack[NUMBER_OF_ALLOY_CORES*STACK_SIZE];
 uint8_t     irqStack[NUMBER_OF_ALLOY_CORES*STACK_SIZE];
 
 
+GlobalData              globals[NUMBER_OF_CORES];
+CoreServicesBridge*     bridge                      = (CoreServicesBridge*)BRIDGE_BASE;
+
+
 
 
 //
@@ -45,9 +49,29 @@ void BoardSupportInitialise()
 
 
 
-GlobalData              globals[NUMBER_OF_CORES];
-CoreServicesBridge*     bridge                      = (CoreServicesBridge*)BRIDGE_BASE;
 
+
+
+
+
+//
+// Get the Multiprocessor affinity register (core id).
+//
+uint32_t MPIDR()
+{
+    uint32_t    mpidr;
+
+    __asm__ volatile("mrc p15, 0, %0, c0, c0, 5\n\t" : "=r"(mpidr));    
+
+    uint32_t coreID     = mpidr & 0x03;
+    return coreID;
+}
+
+
+uint32_t CoreNumber()
+{
+    return MPIDR();
+}
 
 
 
