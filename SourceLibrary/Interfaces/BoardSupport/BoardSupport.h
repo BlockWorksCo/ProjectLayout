@@ -13,7 +13,22 @@
 
 
 #include "Common.h"
+#include "Alloy.h"
 
+
+
+//
+//
+//
+typedef struct
+{
+    CoreMessage             message;
+    uint32_t                numberOfMessagesAvailable;
+    
+} GlobalData;
+
+
+extern CoreServicesBridge*     bridge;
 
 
 void BoardSupportInitialise();
