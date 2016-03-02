@@ -17,19 +17,6 @@
 
 
 
-//
-//
-//
-typedef struct
-{
-    CoreMessage             message;
-    uint32_t                numberOfMessagesAvailable;
-    
-} GlobalData;
-
-
-extern CoreServicesBridge*     bridge;
-
 
 
 uint32_t CoreNumber();
