@@ -2,7 +2,7 @@
 #
 # Source directories
 #
-VPATH		+=	$(SOURCE_LIBRARY)/Implementations/DebugText
+VPATH		+=	$(SOURCE_LIBRARY)/Implementations/AlloyDebugText
 
 
 #

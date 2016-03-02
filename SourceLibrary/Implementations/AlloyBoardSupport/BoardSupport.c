@@ -18,6 +18,12 @@
 
 
 
+#define dsb(option) asm volatile ("dsb " #option : : : "memory")
+#define EI()        asm volatile ("cpsie i")
+#define DI()        asm volatile ("cpsid i")
+
+
+
 //
 //
 //
@@ -56,7 +62,38 @@ void CWRR()
 
 
 
+//
+//
+//
+void EnableInterrupts()
+{
+    EI();
+}
 
+
+//
+//
+//
+void FlushCache()
+{
+    dsb();
+}
+
+#if 0
+//
+//
+//
+void TriggerMailboxInterrupt(uint32_t toID)
+{
+    uint32_t    mailboxSetAddress;
+    uint32_t    coreID  = CoreNumber();
+
+    mailboxSetAddress     = 0x40000080 + (0x10*toID);
+    *(uint32_t*)mailboxSetAddress     = 1<<coreID;
+
+    FlushCache();
+}
+#endif
 
 
 //
