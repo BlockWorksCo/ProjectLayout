@@ -7,21 +7,30 @@
 
 
 
-#ifndef __BOARDSUPPORT_H__
-#define __BOARDSUPPORT_H__
+#ifndef __THREADLOCALSTORAGE_H__
+#define __THREADLOCALSTORAGE_H__
 
 
 
 #include "Common.h"
+#include "Alloy.h"
 
 
 
+//
+//
+//
+typedef struct
+{
+    CoreMessage             message;
+    uint32_t                numberOfMessagesAvailable;
+    
+} GlobalData;
 
-uint32_t CoreNumber();
-void BoardSupportInitialise();
-void EnableInterrupts();
-void TriggerMailboxInterrupt(uint32_t toID);
-void FlushCache();
+
+
+GlobalData* Globals();
+
 
 #endif
 
