@@ -79,7 +79,6 @@ void FlushCache()
     dsb();
 }
 
-#if 0
 //
 //
 //
@@ -93,7 +92,6 @@ void TriggerMailboxInterrupt(uint32_t toID)
 
     FlushCache();
 }
-#endif
 
 
 //
