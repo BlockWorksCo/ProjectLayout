@@ -39,12 +39,45 @@ CoreServicesBridge*     bridge                      = (CoreServicesBridge*)BRIDG
 
 
 
-//
-//
-//
-void BoardSupportInitialise()
-{
 
+
+
+//
+// Cause a reset request.
+//
+void CWRR()
+{
+    //
+    // Cause a reset request.
+    //
+    register uint32_t    cwrr    = 0x00000002;
+    __asm__ volatile("mcr p14, 0, %0, c1, c4, 4\n\t" : : "r"(cwrr));
+}
+
+
+
+
+
+
+//
+//
+//
+void SetVectorTableAddress(uint32_t address)
+{
+    register uint32_t   temp    = address;
+    asm volatile ("mcr p15, 0, %0, c12, c0,  0" : "=r" (temp));
+}
+
+
+
+
+
+//
+//
+//
+void  __attribute__ ((interrupt ("IRQ"))) Handler()
+{
+    PANIC();
 }
 
 
@@ -134,6 +167,49 @@ void __attribute__ ( ( naked ) ) EntryPoint()
     //
     PANIC();
 }
+
+
+
+
+
+
+//
+//
+//
+void __attribute__ ( (naked, aligned(128) ) ) VectorTable()
+{
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =IRQHandler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+    asm volatile ("ldr pc, =Handler");
+}
+
+
+
+
+
+//
+//
+//
+void BoardSupportInitialise()
+{
+    SetVectorTableAddress( (uint32_t)&VectorTable );
+}
+
 
 
 
