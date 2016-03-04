@@ -12,8 +12,8 @@ extern GlobalData              globals[NUMBER_OF_CORES];
 //
 //
 //
-GlobalData              globals[NUMBER_OF_CORES];
-CoreServicesBridge*     bridge                      = (CoreServicesBridge*)BRIDGE_BASE;
+//GlobalData              globals[NUMBER_OF_CORES];
+//CoreServicesBridge*     bridge                      = (CoreServicesBridge*)BRIDGE_BASE;
 
 
 
