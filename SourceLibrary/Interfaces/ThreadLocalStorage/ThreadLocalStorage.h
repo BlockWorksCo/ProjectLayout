@@ -4,7 +4,8 @@
 #ifndef __THREADLOCALSTORAGE_H__
 #define __THREADLOCALSTORAGE_H__
 
-
+#include "Common.h"
+#include "Alloy.h"  // TODO: Remove me.
 
 //
 //

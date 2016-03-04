@@ -39,7 +39,6 @@ void CoreMain(uint32_t coreID);
 uint8_t     usrStack[NUMBER_OF_ALLOY_CORES*STACK_SIZE];
 uint8_t     irqStack[NUMBER_OF_ALLOY_CORES*STACK_SIZE];
 
-
 GlobalData              globals[NUMBER_OF_CORES];
 CoreServicesBridge*     bridge                      = (CoreServicesBridge*)BRIDGE_BASE;
 
@@ -140,18 +139,6 @@ uint32_t MPIDR()
 uint32_t CoreNumber()
 {
     return MPIDR();
-}
-
-
-
-//
-//
-//
-GlobalData* Globals()
-{
-    uint32_t    coreID              = MPIDR();
-
-    return &globals[coreID];
 }
 
 
