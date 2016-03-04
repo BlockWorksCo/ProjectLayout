@@ -1,3 +1,10 @@
+//
+// Copyright (C) BlockWorks Consulting Ltd - All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited.
+// Proprietary and confidential.
+// Written by Steve Tickle <Steve@BlockWorks.co>, September 2014.
+//
+
 
 
 #ifndef __BITSTREAMCOMPRESSOR_H__
@@ -26,6 +33,17 @@ typedef enum
 
 
 //
+// Definition of the temporary working data/context.
+//
+typedef struct
+{
+    Timestamp       timestamps[128];
+    uint32_t        numberOfTimestamps;
+
+} WorkingData;
+
+
+//
 //
 //
 typedef struct
@@ -35,16 +53,17 @@ typedef struct
     bool                    initialState;
     Timestamp               minimumInterEdgeDuration;
     uint8_t                 numberOfBitsPerCompressedElement;
+    uint32_t                numberOfCompressedElements;
     uint8_t                 compressedData[MAX_BITSTREAM_DATA_SIZE];
 
-} BitStream;
+} BitStreamPacket;
 
 
 //
 //
 //
-void CompressedBitStreamInitialise();
-void CompressedBitStreamAddEdge( uint32_t timestamp );
+void CompressedBitStreamInitialise( BitStreamPacket* packet, Timestamp now, bool currentState, WorkingData* workingData );
+bool CompressedBitStreamAddEdge( BitStreamPacket* packet, uint32_t timestamp, WorkingData* workingData  );
 
 
 
