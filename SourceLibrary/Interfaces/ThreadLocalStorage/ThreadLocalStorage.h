@@ -1,3 +1,9 @@
+//
+// Copyright (C) BlockWorks Consulting Ltd - All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited.
+// Proprietary and confidential.
+// Written by Steve Tickle <Steve@BlockWorks.co>, September 2014.
+//
 
 
 
@@ -5,7 +11,7 @@
 #define __THREADLOCALSTORAGE_H__
 
 #include "Common.h"
-#include "Alloy.h"  // TODO: Remove me.
+#include "Alloy.h"
 
 //
 //
@@ -21,6 +27,4 @@ typedef struct
 GlobalData* Globals();
 
 
-
 #endif
-

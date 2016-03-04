@@ -2,21 +2,29 @@
 
 
 #include "ThreadLocalStorage.h"
-#include "Alloy.h"
+#include "BoardSupport.h"
 
 
 extern GlobalData              globals[NUMBER_OF_CORES];
-uint32_t MPIDR();
+
+
+
+//
+//
+//
+GlobalData              globals[NUMBER_OF_CORES];
+CoreServicesBridge*     bridge                      = (CoreServicesBridge*)BRIDGE_BASE;
+
+
+
 
 //
 //
 //
 GlobalData* Globals()
 {
-    uint32_t    coreID              = MPIDR();
+    uint32_t    coreID              = CoreNumber();
 
     return &globals[coreID];
 }
-
-
 
