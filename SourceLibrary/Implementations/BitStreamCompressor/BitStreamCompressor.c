@@ -8,6 +8,7 @@
 
 #include "BitStreamCompressor.h"
 #include "Utilities.h"
+#include "BitArray.h"
 
 
 //
@@ -74,6 +75,7 @@ bool CompressedBitStreamAddEdge( BitStreamPacket* packet, uint32_t timestamp, Wo
         //
         // Encode the timestamps into the minimum number of bits into the packet data.
         //
+        uint32_t    elementIndex    = 0;
         for(uint32_t i=0; i<NUMBER_OF_ELEMENTS(workingData->timestamps); i++ )
         {
             uint32_t    timestampDelta;
@@ -86,15 +88,9 @@ bool CompressedBitStreamAddEdge( BitStreamPacket* packet, uint32_t timestamp, Wo
                 timestampDelta  = workingData->timestamps[i] - workingData->timestamps[i-1];
             }
 
-            if(timestampDelta >= maximumDelta)
-            {
-                maximumDelta    = timestampDelta;
-            }
 
-            if(timestampDelta <= minimumDelta)
-            {
-                minimumDelta    = timestampDelta;
-            }
+
+            elementIndex++;
         }
 
         packetIsComplete    = true;
