@@ -53,7 +53,7 @@ void ProcessDigitalInputs()
     if( rawInputs != previousRawInputs )
     {
         //
-        // If we have a change, add it to the queue.
+        // We have a change, so add it to the queue.
         //
         InputQueueElement   element     =
         {
@@ -66,6 +66,7 @@ void ProcessDigitalInputs()
     //
     // Store the current values as the previous values for the next iteration.
     //
+    previousRawInputs   = rawInputs;
 }
 
 
