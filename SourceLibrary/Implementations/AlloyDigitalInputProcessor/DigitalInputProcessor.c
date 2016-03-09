@@ -8,7 +8,9 @@
 
 #include "DigitalInputProcessor.h"
 #include "HighResolutionTimestamp.h"
+#include "Queue.h"
 #include "Common.h"
+#include "ErrorHandling.h"
 
 
 //
@@ -23,6 +25,14 @@ typedef struct
 
 uint32_t GetInputs();
 void InputQueueAdd( InputQueueElement* element );
+
+
+
+//
+//
+//
+DECLARE_QUEUE(DigitalInputQueue, InputQueueElement, 128);
+
 
 
 //
@@ -50,7 +60,7 @@ void ProcessDigitalInputs()
             .inputs     = rawInputs,
             .timestamp  = timestamp,
         };
-        InputQueueAdd( &element );
+        DigitalInputQueuePut( element );
     }
 
     //
