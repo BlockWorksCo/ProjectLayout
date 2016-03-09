@@ -24,7 +24,6 @@ typedef struct
 } InputQueueElement;
 
 uint32_t GetInputs();
-void InputQueueAdd( InputQueueElement* element );
 
 
 
