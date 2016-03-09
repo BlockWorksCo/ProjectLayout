@@ -30,7 +30,7 @@ uint32_t GetInputs();
 //
 //
 //
-DECLARE_QUEUE(DigitalInputQueue, InputQueueElement, 128);
+DECLARE_QUEUE(DigitalInputQueue, InputQueueElement, 16*1024);
 
 
 
