@@ -48,6 +48,35 @@ void main()
         .fieldC     = 321,
     };
     PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
+
+    TestStruct testStructB  =
+    {
+        .fieldA     = false,
+        .fieldB     = 456,
+        .fieldC     = 654,
+    };
+    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructB );
+
+    PersistentCircularBufferMoveToLast( &pcbAContext );
+    TestStruct  readBackA   = {0};
+    PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
+
+    if( readBackA.fieldA != false )
+    {
+        PANIC();
+    }
+
+    if( readBackA.fieldB != 456 )
+    {
+        PANIC();
+    }
+
+    if( readBackA.fieldB != 654 )
+    {
+        PANIC();
+    }
+
+    PersistentCircularBufferShowState( &pcbAContext );
 }
 
 

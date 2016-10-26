@@ -14,7 +14,7 @@
 
 
 
-void ShowState( PersistentCircularBufferContext* context )
+void PersistentCircularBufferShowState( PersistentCircularBufferContext* context )
 {
     printf("\n\n");
 

@@ -114,7 +114,7 @@ void PersistentCircularBufferForward( PersistentCircularBufferContext* context )
 void PersistentCircularBufferPeek( PersistentCircularBufferContext* context, uint8_t* data );
 
 
-void ShowState( PersistentCircularBufferContext* context );
+void PersistentCircularBufferShowState( PersistentCircularBufferContext* context );
 
 #endif
 
