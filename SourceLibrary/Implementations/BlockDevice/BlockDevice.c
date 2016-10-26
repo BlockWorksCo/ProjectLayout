@@ -176,32 +176,3 @@ void ReadFromBlockDeviceRegion( uint32_t transactionID, uint32_t offset, uint8_t
     }
 }
 
-
-
-#if 0
-
-
-//
-//
-//
-uint32_t StartTransaction( TransactionType type )
-{
-    static uint32_t     transactionIDCounter     = 0;
-
-    transactionIDCounter++;
-
-    return transactionIDCounter;
-}
-
-
-//
-//
-//
-void EndTransaction( uint32_t transactionID )
-{
-    //FlushCache( transactionID );
-}
-
-
-
-#endif

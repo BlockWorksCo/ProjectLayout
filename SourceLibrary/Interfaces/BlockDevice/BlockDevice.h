@@ -15,15 +15,6 @@
 #include "Common.h"
 
 
-//
-//
-//
-typedef enum
-{
-    DoSomething,
-    
-} TransactionType;
-
 
 //
 //
@@ -40,9 +31,6 @@ typedef enum
 //
 void WriteToBlockDeviceRegion( uint32_t transactionID, uint32_t offset, uint8_t* data, uint32_t numberOfBytes );
 void ReadFromBlockDeviceRegion( uint32_t transactionID, uint32_t offset, uint8_t* data, uint32_t numberOfBytes );
-
-uint32_t StartTransaction( TransactionType type );
-void EndTransaction( uint32_t transactionID );
 
 #endif
 
