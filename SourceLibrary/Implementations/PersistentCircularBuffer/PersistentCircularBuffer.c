@@ -36,7 +36,7 @@ void ShowState( PersistentCircularBufferContext* context )
 //
 //
 //
-void Read( PersistentCircularBufferContext* context, uint32_t offset, uint32_t numberOfBytes, uint8_t* data )
+static void Read( PersistentCircularBufferContext* context, uint32_t offset, uint32_t numberOfBytes, uint8_t* data )
 {
     uint32_t    page    = offset / PAGE_SIZE;
 
@@ -58,7 +58,7 @@ void Read( PersistentCircularBufferContext* context, uint32_t offset, uint32_t n
 //
 //
 //
-void Write( PersistentCircularBufferContext* context, uint32_t offset, uint32_t numberOfBytes, uint8_t* data )
+static void Write( PersistentCircularBufferContext* context, uint32_t offset, uint32_t numberOfBytes, uint8_t* data )
 {
     uint32_t    page    = offset / PAGE_SIZE;
 

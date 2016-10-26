@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 
 
@@ -28,7 +29,7 @@ void FLASHDeviceInitialise()
     }
 
     lseek(fd, RAW_DEVICE_SIZE-1, SEEK_SET);
-    write(fd, "", 1);
+    (void)write(fd, "", 1);
 
     FLASHDeviceEraseDevice();
 }
@@ -80,8 +81,8 @@ bool FLASHDeviceWrite(uint32_t offset, uint32_t numberOfBytes, uint8_t* data)
     //
     // Read...
     //
-    lseek( fd, pageNumber*PAGE_SIZE, SEEK_SET );
-    read( fd, &existingPage[0], PAGE_SIZE );
+    (void)lseek( fd, pageNumber*PAGE_SIZE, SEEK_SET );
+    (void)read( fd, &existingPage[0], PAGE_SIZE );
 
     //
     // ...modify
@@ -94,8 +95,8 @@ bool FLASHDeviceWrite(uint32_t offset, uint32_t numberOfBytes, uint8_t* data)
     //
     // ...write.
     //
-    lseek( fd, pageNumber*PAGE_SIZE, SEEK_SET );
-    write( fd, &existingPage[0], PAGE_SIZE );
+    (void)lseek( fd, pageNumber*PAGE_SIZE, SEEK_SET );
+    (void)write( fd, &existingPage[0], PAGE_SIZE );
 
     return true;
 }
@@ -109,7 +110,7 @@ void FLASHDeviceRead(uint32_t offset, uint32_t numberOfBytes, uint8_t* data)
         //printf("pos %d != %d\n", (int)pos, offset );
         exit(-1);
     }
-    read( fd, &data[0], numberOfBytes );
+    (void)read( fd, &data[0], numberOfBytes );
     
     //printf("-- Reading %d bytes from %08x\n", numberOfBytes, offset);
 }

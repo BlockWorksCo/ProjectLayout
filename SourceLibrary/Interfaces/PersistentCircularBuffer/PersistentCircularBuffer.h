@@ -25,6 +25,7 @@
 // - wear levelling.
 // - deterministic shutdown performance.
 // - caching.
+// - consistency.
 //
 
 

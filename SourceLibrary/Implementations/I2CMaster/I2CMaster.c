@@ -109,7 +109,7 @@ bool            (*byteReceivedCallback)(uint8_t);
 //
 //
 //
-void Write(uint8_t* _bytes, uint8_t _numberOfBytes, Handler _completionEvent )
+void I2CWrite(uint8_t* _bytes, uint8_t _numberOfBytes, Handler _completionEvent )
 {
     completionEvent     = _completionEvent;
     masterState         = Transmitting;
@@ -122,7 +122,7 @@ void Write(uint8_t* _bytes, uint8_t _numberOfBytes, Handler _completionEvent )
 //
 //
 //
-void Read( bool (*_byteReceivedCallback)(uint8_t), uint8_t _numberOfBytes , Handler _completionEvent )
+void I2CRead( bool (*_byteReceivedCallback)(uint8_t), uint8_t _numberOfBytes , Handler _completionEvent )
 {
     numberOfBytesToTranfer  = _numberOfBytes;
     completionEvent     = _completionEvent;        

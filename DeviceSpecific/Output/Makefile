@@ -19,10 +19,10 @@
 # Tools
 #
 SHELL     		= sh
-CPPC      		= arm-none-eabi-g++
-CC        	    = arm-none-eabi-gcc
-LD        		= arm-none-eabi-gcc
-OBJCOPY   		= arm-none-eabi-objcopy
+CPPC      		= g++
+CC        	    = gcc
+LD        		= gcc
+OBJCOPY   		= objcopy
 RM        		= rm
 MKDIR     		= mkdir
 SIZE      		= size
@@ -35,8 +35,8 @@ ECHO_GREEN		= echo -e "\033[0;32m"
 #
 # Build flags.
 #
-CFLAGS 			= -O2 -g --std=c99
-LDFLAGS			= -g -nostdlib
+CFLAGS 			= -O2 -g --std=c99 -Wno-unused-result
+LDFLAGS			= -g
 
 
 #########################################################################################################
@@ -64,7 +64,9 @@ include $(SOURCE_LIBRARY)/Implementations/NullDebugText/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/Safety/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/TextFormatter/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/BlockDevice/Build.mk
-include $(SOURCE_LIBRARY)/Implementations/CortexMBoardSupport/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/FLASHDevice/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/LinuxBoardSupport/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/PersistentCircularBuffer/Build.mk
 
 
 #

@@ -15,22 +15,12 @@
 #include "Common.h"
 
 
-
 //
 //
 //
-typedef enum
-{
-    EntireDevice,
-
-} BlockDeviceRegion;
-
-
-//
-//
-//
-void WriteToBlockDeviceRegion( uint32_t transactionID, uint32_t offset, uint8_t* data, uint32_t numberOfBytes );
-void ReadFromBlockDeviceRegion( uint32_t transactionID, uint32_t offset, uint8_t* data, uint32_t numberOfBytes );
+void BlockDeviceInitialise();
+void WriteToBlockDeviceRegion( uint32_t offset, uint8_t* data, uint32_t numberOfBytes );
+void ReadFromBlockDeviceRegion( uint32_t offset, uint8_t* data, uint32_t numberOfBytes );
 
 #endif
 
