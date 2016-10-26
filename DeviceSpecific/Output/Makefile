@@ -60,10 +60,11 @@ include $(SOURCE_LIBRARY)/Implementations/LogStorage/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/PredicatedEvents/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/UnitTest/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/Utilities/Build.mk
-include $(SOURCE_LIBRARY)/Implementations/DebugText/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/NullDebugText/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/Safety/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/TextFormatter/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/BlockDevice/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/CortexMBoardSupport/Build.mk
 
 
 #

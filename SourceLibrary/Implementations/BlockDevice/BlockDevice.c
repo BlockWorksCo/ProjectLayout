@@ -87,7 +87,7 @@ uint32_t AddToCache( uint32_t transactionID, uint32_t offset, uint8_t* data)
     return cacheIndex;    
 }
 
-
+#if 0
 //
 // Write all cache entries for the specified transaction that are *not* discardable to the device.
 //
@@ -110,7 +110,7 @@ void FlushCache( uint32_t transactionID )
 }
 
 
-
+#endif
 
 
 //
@@ -178,7 +178,7 @@ void ReadFromBlockDeviceRegion( uint32_t transactionID, uint32_t offset, uint8_t
 
 
 
-
+#if 0
 
 
 //
@@ -199,8 +199,9 @@ uint32_t StartTransaction( TransactionType type )
 //
 void EndTransaction( uint32_t transactionID )
 {
-    FlushCache( transactionID );
+    //FlushCache( transactionID );
 }
 
 
 
+#endif
