@@ -2,20 +2,20 @@
 #
 # Source directories
 #
-VPATH		+=	$(SOURCE_LIBRARY)/Implementations/I2CMaster
+VPATH		+=	$(SOURCE_LIBRARY)/Implementations/IntegrityChecking
 
 
 #
 # Include directories.
 #
-INCLUDES	+=	-I$(SOURCE_LIBRARY)/Implementations/I2CMaster \
-        	  	-I$(SOURCE_LIBRARY)/Interfaces/I2CMaster
+INCLUDES	+=	-I$(SOURCE_LIBRARY)/Implementations/IntegrityChecking \
+        	  	-I$(SOURCE_LIBRARY)/Interfaces/IntegrityChecking
 
 
 #
 # Objects to build.
 #
-OBJS		+=	I2CMaster.o
+OBJS		+=	IntegrityChecking.o
     		  		
 
 #
