@@ -8,6 +8,7 @@
 #include "MemoryPool.h"
 #include "FLASHDevice.h"
 #include "PersistentCircularBuffer.h"
+#include "ErrorHandling.h"
 
 
 
