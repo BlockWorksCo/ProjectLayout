@@ -9,6 +9,7 @@
 #include "FLASHDevice.h"
 #include "PersistentCircularBuffer.h"
 #include "ErrorHandling.h"
+#include "Assertions.h"
 
 
 
@@ -62,20 +63,9 @@ void main()
     TestStruct  readBackA   = {0};
     PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
 
-    if( readBackA.fieldA != false )
-    {
-        PANIC();
-    }
-
-    if( readBackA.fieldB != 456 )
-    {
-        PANIC();
-    }
-
-    if( readBackA.fieldB != 654 )
-    {
-        PANIC();
-    }
+    AssertThat( readBackA.fieldA == false );
+    AssertThat( readBackA.fieldB == 456 );
+    AssertThat( readBackA.fieldB == 654 );
 
     PersistentCircularBufferShowState( &pcbAContext );
 }
