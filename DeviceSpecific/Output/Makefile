@@ -68,6 +68,7 @@ include $(SOURCE_LIBRARY)/Implementations/FLASHDevice/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/LinuxBoardSupport/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/PersistentCircularBuffer/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/IntegrityChecking/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/NonFatalAssertions/Build.mk
 
 
 #
