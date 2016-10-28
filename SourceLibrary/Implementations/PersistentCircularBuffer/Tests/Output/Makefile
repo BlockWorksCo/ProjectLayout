@@ -42,7 +42,7 @@ LDFLAGS			= -g
 #########################################################################################################
 
 
-include Build.mk
+include ../Build.mk
 include $(SOURCE_LIBRARY)/Implementations/UnitTest/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/Utilities/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/NullDebugText/Build.mk
@@ -53,6 +53,7 @@ include $(SOURCE_LIBRARY)/Implementations/FLASHDevice/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/LinuxBoardSupport/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/PersistentCircularBuffer/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/NonFatalAssertions/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/ErrorHandling/Build.mk
 
 
 #

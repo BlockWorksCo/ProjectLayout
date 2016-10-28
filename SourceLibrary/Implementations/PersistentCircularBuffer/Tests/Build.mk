@@ -2,13 +2,13 @@
 #
 # Source directories
 #
-VPATH		+=	.
+VPATH		+=	../
 
 
 #
 # Include directories.
 #
-INCLUDES	+=	-I.
+INCLUDES	+=	-I../
 
 
 #
