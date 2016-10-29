@@ -8,7 +8,7 @@
 #include "PersistentCircularBuffer.h"
 #include "ErrorHandling.h"
 #include "Assertions.h"
-
+#include "DebugText.h"
 
 
 typedef struct
@@ -75,9 +75,9 @@ void TestOne()
     //
     // Check the record we read back.
     //
-    AssertThat( readBackA.fieldA == false );
-    AssertThat( readBackA.fieldB == 456 );
-    AssertThat( readBackA.fieldB == 654 );
+    AssertThat( readBackA.fieldA == false,  "fieldA is incorrect." );
+    AssertThat( readBackA.fieldB == 456,    "fieldB is incorrect." );
+    AssertThat( readBackA.fieldC == 654,    "fieldC is incorrect." );
 }
 
 
@@ -87,26 +87,20 @@ void TestOne()
 void TestTwo()
 {
     //
-    // Write one record.
+    // Write 16 records.
     //
     TestStruct testStructA  =
     {
         .fieldA     = true,
-        .fieldB     = 123,
+        .fieldB     = 0,
         .fieldC     = 321,
     };
-    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
 
-    //
-    // Write another record.
-    //
-    TestStruct testStructB  =
+    for(uint32_t i=0; i<16; i++)
     {
-        .fieldA     = false,
-        .fieldB     = 456,
-        .fieldC     = 654,
-    };
-    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructB );
+        PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
+        testStructA.fieldB++;
+    }
 
     //
     // Read the last record.
@@ -118,9 +112,9 @@ void TestTwo()
     //
     // Check the record we read back.
     //
-    AssertThat( readBackA.fieldA == false );
-    AssertThat( readBackA.fieldB == 456 );
-    AssertThat( readBackA.fieldB == 654 );
+    AssertThat( readBackA.fieldA == true,   "fieldA is incorrect." );
+    AssertThat( readBackA.fieldB == 15,     "fieldB is incorrect." );
+    AssertThat( readBackA.fieldC == 321,    "fieldC is incorrect." );
 }
 
 
@@ -133,6 +127,8 @@ void TestTwo()
 //
 void main()
 {
+    DebugPrintf("\nTests starting.\n");
+
     //
     //
     //
@@ -144,6 +140,7 @@ void main()
     Reset();
     TestTwo();
 
+    DebugPrintf("\nComplete.\n");
 }
 
 

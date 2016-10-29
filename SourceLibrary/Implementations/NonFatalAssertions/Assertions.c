@@ -9,11 +9,11 @@
 //
 //
 //
-void AssertThat( bool condition )
+void AssertThat( bool condition, const char* message  )
 {
     if( condition == false )
     {
-        DebugPrintf("\n*** ASSERTION FAILURE ***\n");
+        DebugPrintf("\n*** ASSERTION FAILURE: %s ***\n", message );
     }
 }
 
