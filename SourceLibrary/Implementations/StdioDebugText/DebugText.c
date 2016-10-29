@@ -24,7 +24,7 @@ void DebugPrintf(const char* format, ...)
     va_list         list;
 
     va_start( list, format );     
-    snprintf( &output[0], sizeof(output), format, list );
+    vsnprintf( &output[0], sizeof(output), format, list );
     va_end(list);
 
     DebugTextOutput( &output[0] );

@@ -114,7 +114,7 @@ void TestTwo()
     //
     AssertThat( readBackA.fieldA == true,   "fieldA is incorrect." );
     AssertThat( readBackA.fieldB == 15,     "fieldB is incorrect." );
-    AssertThat( readBackA.fieldC == 321,    "fieldC is incorrect." );
+    AssertThat( readBackA.fieldC == 31,    "fieldC is incorrect." );
 }
 
 
