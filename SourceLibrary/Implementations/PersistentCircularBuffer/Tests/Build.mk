@@ -1,14 +1,17 @@
 
+
+THIS_MAKEFILE_PATH=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
 #
 # Source directories
 #
-VPATH		+=	../
+VPATH		+=	$(THIS_MAKEFILE_PATH)
 
 
 #
 # Include directories.
 #
-INCLUDES	+=	-I../
+INCLUDES	+=	-I$(THIS_MAKEFILE_PATH)
 
 
 #

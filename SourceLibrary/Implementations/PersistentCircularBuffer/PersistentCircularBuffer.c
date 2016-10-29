@@ -173,7 +173,7 @@ void PersistentCircularBufferInitialise( PersistentCircularBufferContext* contex
     context->writeBufferedPage  = context->lastElement / context->layout->numberOfElementsPerPage;
     FLASHDeviceRead( context->writeBufferedPage*PAGE_SIZE,   PAGE_SIZE,  &context->writeBuffer[0] );
     FLASHDeviceErasePage( context->writeBufferedPage );
-    printf("Preloaded page %d %d\n", context->writeBufferedPage, context->writeBufferedPage*PAGE_SIZE);
+    //printf("Preloaded page %d %d\n", context->writeBufferedPage, context->writeBufferedPage*PAGE_SIZE);
 
     //
     // Set the current position to element 0.
