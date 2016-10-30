@@ -44,7 +44,7 @@ void Reset()
 void TestOne()
 {
     //
-    // Write one record.
+    // Write one record at the last position.
     //
     TestStruct testStructA  =
     {
@@ -55,7 +55,7 @@ void TestOne()
     PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
 
     //
-    // Write another record.
+    // Overwrite with another record.
     //
     TestStruct testStructB  =
     {
@@ -96,9 +96,9 @@ void TestTwo()
         .fieldC     = 321,
     };
 
-    for(uint32_t i=0; i<16; i++)
+    for(uint32_t i=0; i<10; i++)
     {
-        PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
+        PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
         testStructA.fieldB++;
     }
 
@@ -114,7 +114,28 @@ void TestTwo()
     //
     AssertThat( readBackA.fieldA == true,   "fieldA is incorrect." );
     AssertThat( readBackA.fieldB == 15,     "fieldB is incorrect." );
-    AssertThat( readBackA.fieldC == 31,    "fieldC is incorrect." );
+    AssertThat( readBackA.fieldC == 321,    "fieldC is incorrect." );
+
+    //
+    // Read the first record.
+    //
+    //PersistentCircularBufferMoveToFirst( &pcbAContext );
+    //PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
+
+    for(uint32_t i=0; i<10; i++)
+    {
+        PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
+        DebugPrintf("%d\n", readBackA.fieldB);
+
+        PersistentCircularBufferBack( &pcbAContext );
+    }
+
+    //
+    // Check the record we read back.
+    //
+    AssertThat( readBackA.fieldA == true,   "fieldA is incorrect." );
+    AssertThat( readBackA.fieldB == 0,      "fieldB is incorrect." );
+    AssertThat( readBackA.fieldC == 321,    "fieldC is incorrect." );
 }
 
 
@@ -127,17 +148,17 @@ void TestTwo()
 //
 void main()
 {
-    DebugPrintf("\nTests starting.\n");
-
     //
     //
     //
     FLASHDeviceInitialise();
 
     Reset();
+    DebugPrintf("TestOne:\n");
     TestOne();
 
     Reset();
+    DebugPrintf("TestTwo:\n");
     TestTwo();
 
     DebugPrintf("\nComplete.\n");
