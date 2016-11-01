@@ -122,6 +122,7 @@ void TestTwo()
     //PersistentCircularBufferMoveToFirst( &pcbAContext );
     //PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
 
+    PersistentCircularBufferMoveToLast( &pcbAContext );
     for(uint32_t i=0; i<10; i++)
     {
         PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
