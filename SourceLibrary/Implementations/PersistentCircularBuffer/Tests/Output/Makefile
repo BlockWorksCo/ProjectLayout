@@ -12,7 +12,6 @@
 .DEFAULT_GOAL := all
 .SUFFIXES: .c .h .o
 
-THIS_MAKEFILE_PATH=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 
 

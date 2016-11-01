@@ -1,11 +1,11 @@
 
 
-THIS_MAKEFILE_PATH=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+THIS_MAKEFILE_PATH  := $(dir $(lastword $(MAKEFILE_LIST)))
 
 #
 # Source directories
 #
-VPATH		+=	$(THIS_MAKEFILE_PATH)
+VPATH		+=  $(THIS_MAKEFILE_PATH)
 
 
 #
