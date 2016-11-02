@@ -226,7 +226,11 @@ void PersistentCircularBufferAdd( PersistentCircularBufferContext* context, uint
     // Move the last-element pointer around the buffer in a circular manner, overwriting
     // old data when needed.
     //
-    context->lastElement   = (context->lastElement + 1) % context->layout->numberOfElementsInTotal;
+    context->lastElement   = context->lastElement + 1;
+    if( context->lastElement >= context->layout->numberOfElementsInTotal )
+    {
+        context->lastElement   = 0;
+    }
 
     //
     // If the write-buffered page has changed (to accomodate the new lastElement) then flush the
@@ -272,7 +276,11 @@ void PersistentCircularBufferRemoveFirst( PersistentCircularBufferContext* conte
     //
     // Move the first element index around the buffer.
     //
-    context->firstElement   = (context->firstElement + 1) % context->layout->numberOfElementsInTotal;
+    context->firstElement   = context->firstElement + 1;
+    if( context->firstElement >= context->layout->numberOfElementsInTotal )
+    {
+        context->firstElement   = 0;
+    }
 
     //
     // Check to see if we can erase the page that contained the last element now that we've
@@ -310,7 +318,11 @@ void PersistentCircularBufferRemoveLast( PersistentCircularBufferContext* contex
     //
     // Move the first element index around the buffer.
     //
-    context->lastElement   = (context->lastElement - 1) % context->layout->numberOfElementsInTotal;
+    context->lastElement   = context->lastElement - 1;
+    if( context->lastElement >= context->layout->numberOfElementsInTotal )
+    {
+        context->lastElement   = context->layout->numberOfElementsInTotal - 1;
+    }
 
     //
     // Check to see if we can erase the page that contained the last element now that we've
@@ -380,7 +392,11 @@ void PersistentCircularBufferForEach( PersistentCircularBufferContext* context, 
 
         fn( i-context->firstElement, &data[0] );
 
-        i   = (i + 1) % context->layout->numberOfElementsInTotal;
+        i   = i + 1;
+        if( i >= context->layout->numberOfElementsInTotal )
+        {
+            i   = 0;
+        }
     }
 }
 
@@ -397,7 +413,11 @@ uint32_t PersistentCircularBufferNumberOfElements( PersistentCircularBufferConte
 
         //Read(context, elementOffset,                    sizeof(metadata),                           (uint8_t*)&metadata );
 
-        i   = (i + 1) % context->layout->numberOfElementsInTotal;
+        i   = i + 1;
+        if( i >= context->layout->numberOfElementsInTotal )
+        {
+            i   = 0;
+        }
         count++;
     }
 
@@ -432,15 +452,21 @@ void PersistentCircularBufferMoveToLast( PersistentCircularBufferContext* contex
 
 void PersistentCircularBufferBack( PersistentCircularBufferContext* context )
 {
-    //context->currentPosition    = (context->currentPosition - 1) % context->layout->numberOfElementsInTotal;
-    context->currentPosition    = context->currentPosition - 1;
-    context->currentPosition    %= context->layout->numberOfElementsInTotal;
+    context->currentPosition--;
+    if( context->currentPosition == UINT32_MAX)
+    {
+        context->currentPosition = context->layout->numberOfElementsInTotal-1;
+    }
 }
 
 
 void PersistentCircularBufferForward( PersistentCircularBufferContext* context )
 {
-    context->currentPosition    = (context->currentPosition + 1) % context->layout->numberOfElementsInTotal;
+    context->currentPosition    = context->currentPosition + 1;
+    if(context->currentPosition >= context->layout->numberOfElementsInTotal)
+    {
+        context->currentPosition = 0;
+    }
 }
 
 

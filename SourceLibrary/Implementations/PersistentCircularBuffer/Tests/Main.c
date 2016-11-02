@@ -147,13 +147,14 @@ void TestTwo()
 //
 //
 //
-void main()
+int main()
 {
+#if 0
     uint32_t    a   = 2720;
-    uint32_t    b   = (uint32_t)-1;
-    DebugPrintf("%08x %08x = %08x\n", a, b, b%a );
-    return;
-
+    uint32_t    b   = 0x80000000;
+    DebugPrintf("%08x %08x = %08x\n", a, b, (uint32_t)((uint64_t)b % (uint64_t)a) );
+    //return;
+#endif
 
     //
     //

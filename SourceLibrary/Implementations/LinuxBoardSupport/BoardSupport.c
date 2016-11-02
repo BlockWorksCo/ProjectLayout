@@ -44,6 +44,7 @@ void SetVectorTableAddress(uint32_t address)
 
 uint32_t CoreNumber()
 {
+    return 0;
 }
 
 

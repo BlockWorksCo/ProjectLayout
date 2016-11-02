@@ -21,9 +21,9 @@
 # Tools
 #
 SHELL     		= sh
-CPPC      		= g++
-CC        	    = gcc
-LD        		= gcc
+CPPC      		= clang
+CC        	    = clang
+LD        		= clang
 OBJCOPY   		= objcopy
 RM        		= rm
 MKDIR     		= mkdir
