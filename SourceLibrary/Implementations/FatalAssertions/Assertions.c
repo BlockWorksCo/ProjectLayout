@@ -9,7 +9,7 @@
 //
 //
 //
-void AssertThat( bool condition, const char* message )
+void AssertThat( bool condition, const char* message, ... )
 {
     if( condition == false )
     {

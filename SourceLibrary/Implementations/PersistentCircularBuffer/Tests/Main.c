@@ -78,9 +78,9 @@ PersistentCircularBufferShowState(&pcbAContext);
     //
     // Check the record we read back.
     //
-    AssertThat( readBackA.fieldA == false,  "fieldA is incorrect." );
-    AssertThat( readBackA.fieldB == 456,    "fieldB is incorrect." );
-    AssertThat( readBackA.fieldC == 654,    "fieldC is incorrect." );
+    AssertThat( readBackA.fieldA == false,  "fieldA is incorrect (%d)", readBackA.fieldA );
+    AssertThat( readBackA.fieldB == 456,    "fieldB is incorrect.(%d)", readBackA.fieldB );
+    AssertThat( readBackA.fieldC == 654,    "fieldC is incorrect.(%d)", readBackA.fieldC );
 }
 
 

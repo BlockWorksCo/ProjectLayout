@@ -7,7 +7,7 @@
 #include "Common.h"
 
 
-void AssertThat( bool condition, const char* message );
+void AssertThat( bool condition, const char* message, ... );
 
 
 #endif
