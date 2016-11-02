@@ -52,7 +52,7 @@ void TestOne()
         .fieldB     = 123,
         .fieldC     = 321,
     };
-    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
+    PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
 
     //
     // Overwrite with another record.
@@ -63,12 +63,15 @@ void TestOne()
         .fieldB     = 456,
         .fieldC     = 654,
     };
+PersistentCircularBufferShowState(&pcbAContext);
     PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructB );
+PersistentCircularBufferShowState(&pcbAContext);
 
     //
     // Read the last record.
     //
     PersistentCircularBufferMoveToLast( &pcbAContext );
+    //PersistentCircularBufferBack( &pcbAContext );
     TestStruct  readBackA   = {0};
     PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
 
@@ -96,11 +99,19 @@ void TestTwo()
         .fieldC     = 321,
     };
 
-    for(uint32_t i=0; i<10; i++)
-    {
-        PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
-        testStructA.fieldB++;
-    }
+
+    testStructA.fieldB  = 0;
+    PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
+    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
+    testStructA.fieldB  = 1;
+    PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
+    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
+    testStructA.fieldB  = 2;
+    PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
+    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
+    testStructA.fieldB  = 3;
+    PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
+    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructA );
 
     //
     // Read the last record.
@@ -113,29 +124,18 @@ void TestTwo()
     // Check the record we read back.
     //
     AssertThat( readBackA.fieldA == true,   "fieldA is incorrect." );
-    AssertThat( readBackA.fieldB == 15,     "fieldB is incorrect." );
+    AssertThat( readBackA.fieldB == 3,      "fieldB is incorrect." );
     AssertThat( readBackA.fieldC == 321,    "fieldC is incorrect." );
 
     //
-    // Read the first record.
     //
-    //PersistentCircularBufferMoveToFirst( &pcbAContext );
-    //PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
-
+    //
     PersistentCircularBufferMoveToLast( &pcbAContext );
-    for(uint32_t i=0; i<10; i++)
-    {
-        PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
-        DebugPrintf("%d\n", readBackA.fieldB);
+    PersistentCircularBufferBack( &pcbAContext );
+    PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
 
-        PersistentCircularBufferBack( &pcbAContext );
-    }
-
-    //
-    // Check the record we read back.
-    //
     AssertThat( readBackA.fieldA == true,   "fieldA is incorrect." );
-    AssertThat( readBackA.fieldB == 0,      "fieldB is incorrect." );
+    AssertThat( readBackA.fieldB == 2,      "fieldB is incorrect." );
     AssertThat( readBackA.fieldC == 321,    "fieldC is incorrect." );
 }
 
@@ -149,6 +149,12 @@ void TestTwo()
 //
 void main()
 {
+    uint32_t    a   = 2720;
+    uint32_t    b   = (uint32_t)-1;
+    DebugPrintf("%08x %08x = %08x\n", a, b, b%a );
+    return;
+
+
     //
     //
     //

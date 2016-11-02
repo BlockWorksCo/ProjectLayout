@@ -22,6 +22,7 @@ void PersistentCircularBufferShowState( PersistentCircularBufferContext* context
     printf("lastElement = %d\n", context->lastElement );
     printf("lastSequenceNumber = %d\n", context->lastSequenceNumber );
     printf("writeBufferedPage = %d\n", context->writeBufferedPage );
+    printf("currentPosition = %d\n", context->currentPosition );
 
     printf("startPage = %d\n", context->layout->startPage );
     printf("numberOfPages = %d\n", context->layout->numberOfPages );
@@ -178,7 +179,7 @@ void PersistentCircularBufferInitialise( PersistentCircularBufferContext* contex
     //
     // Set the current position to element 0.
     //  
-    context->currentPosition        = 0;
+    PersistentCircularBufferMoveToFirst( context );
 }
 
 
@@ -189,8 +190,10 @@ void PersistentCircularBufferInitialise( PersistentCircularBufferContext* contex
 //
 void PersistentCircularBufferUpdateLast( PersistentCircularBufferContext* context, uint8_t* data )
 {
+printf("1) lastElement = %d, currentPosition = %d\n", context->lastElement, context->currentPosition);
+    PersistentCircularBufferMoveToLast( context );
     uint32_t    elementOffset   = OffsetOfElement(context, context->lastElement);
-
+printf("2) elementOffset = %d, lastElement = %d, currentPosition = %d\n", elementOffset, context->lastElement, context->currentPosition);
     Write( context, elementOffset+sizeof(ElementMetadata),   context->layout->numberOfBytesPerElement,   data );
 }
 
@@ -204,7 +207,6 @@ void PersistentCircularBufferAdd( PersistentCircularBufferContext* context, uint
 {
     uint32_t    elementOffset   = OffsetOfElement(context, context->lastElement);
 
-    //printf("Adding element = %d\n", elementOffset );
 
     //
     // Make a new element with an increasing sequence number (so we can identify the
@@ -217,14 +219,14 @@ void PersistentCircularBufferAdd( PersistentCircularBufferContext* context, uint
         .crc                = 0xa5a5,
     };
 
+    Write( context, elementOffset,                    sizeof(metadata),                           (uint8_t*)&metadata );
+    Write( context, elementOffset+sizeof(metadata),   context->layout->numberOfBytesPerElement,   data );
+
     //
     // Move the last-element pointer around the buffer in a circular manner, overwriting
     // old data when needed.
     //
     context->lastElement   = (context->lastElement + 1) % context->layout->numberOfElementsInTotal;
-
-    Write( context, elementOffset,                    sizeof(metadata),                           (uint8_t*)&metadata );
-    Write( context, elementOffset+sizeof(metadata),   context->layout->numberOfBytesPerElement,   data );
 
     //
     // If the write-buffered page has changed (to accomodate the new lastElement) then flush the
@@ -234,6 +236,7 @@ void PersistentCircularBufferAdd( PersistentCircularBufferContext* context, uint
     {
         PersistentCircularBufferMoveWriteBuffer(context, context->lastElement / context->layout->numberOfElementsPerPage );
     }
+    //printf("Adding element offset = %d last=(%d)\n", elementOffset, context->lastElement );
 }
 
 
@@ -419,12 +422,19 @@ void PersistentCircularBufferMoveToFirst( PersistentCircularBufferContext* conte
 void PersistentCircularBufferMoveToLast( PersistentCircularBufferContext* context )
 {
     context->currentPosition    = context->lastElement;
+    
+    //
+    // last element points to next empty slot, so move it back a notch.
+    //
+    PersistentCircularBufferBack( context );
 }
 
 
 void PersistentCircularBufferBack( PersistentCircularBufferContext* context )
 {
-    context->currentPosition    = (context->currentPosition - 1) % context->layout->numberOfElementsInTotal;
+    //context->currentPosition    = (context->currentPosition - 1) % context->layout->numberOfElementsInTotal;
+    context->currentPosition    = context->currentPosition - 1;
+    context->currentPosition    %= context->layout->numberOfElementsInTotal;
 }
 
 

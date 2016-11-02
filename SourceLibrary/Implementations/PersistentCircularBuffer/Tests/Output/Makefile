@@ -37,7 +37,7 @@ ECHO_GREEN		= echo -e "\033[0;32m"
 #
 # Build flags.
 #
-CFLAGS 			= -O2 -g --std=c99 -Wno-unused-result
+CFLAGS 			= -O0 -g --std=c99 -Wno-unused-result
 LDFLAGS			= -g
 
 
