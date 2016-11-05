@@ -43,6 +43,9 @@ void Reset()
 //
 void TestOne()
 {
+    char    test[16]    = {100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115};
+    DebugHexDumpBytes( (uint8_t*)&test, sizeof(test) );
+
     //
     // Write one record at the last position.
     //

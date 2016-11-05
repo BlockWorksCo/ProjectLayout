@@ -48,7 +48,7 @@ void DebugHexDumpBytes( const uint8_t* data, uint32_t numberOfBytes )
     for(uint32_t i=0; i<numberOfBytes; i++)
     {
         char    text[4]     = {0};
-        text[0]     = NibbleToHex( (data[i] & 0x0f)>>4 );
+        text[0]     = NibbleToHex( (data[i])>>4 );
         text[1]     = NibbleToHex( data[i] & 0x0f );
         text[2]     = ' ';
         text[3]     = 0;
