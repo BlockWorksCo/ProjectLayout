@@ -31,6 +31,36 @@ void DebugPrintf(const char* format, ...)
 }
 
 
+char NibbleToHex( uint8_t nibble )
+{
+    if(nibble<10)
+    {
+        return '0'+nibble;
+    }
+    else
+    {
+        return 'A'+(nibble-10);
+    }
+}
+
+void DebugHexDumpBytes( const uint8_t* data, uint32_t numberOfBytes )
+{
+    for(uint32_t i=0; i<numberOfBytes; i++)
+    {
+        char    text[4]     = {0};
+        text[0]     = NibbleToHex( (data[i] & 0x0f)>>4 );
+        text[1]     = NibbleToHex( data[i] & 0x0f );
+        text[2]     = ' ';
+        text[3]     = 0;
+        DebugTextOutput( &text[0] );
+    }
+    DebugTextOutput( "\n" );
+}
+
+void DebugHexDumpWords( const uint8_t* data, uint32_t numberOfBytes )
+{
+
+}
 
 
 

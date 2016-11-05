@@ -29,5 +29,16 @@ void DebugPrintf(const char* format, ...)
 
 
 
+void DebugHexDumpBytes( const uint8_t* data, uint32_t numberOfBytes )
+{
+
+}
+
+void DebugHexDumpWords( const uint8_t* data, uint32_t numberOfBytes )
+{
+
+}
+
+
 
 

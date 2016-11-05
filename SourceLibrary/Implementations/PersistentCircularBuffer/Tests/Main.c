@@ -52,7 +52,9 @@ void TestOne()
         .fieldB     = 123,
         .fieldC     = 321,
     };
+PersistentCircularBufferShowState(&pcbAContext);
     PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
+PersistentCircularBufferShowState(&pcbAContext);
 
     //
     // Overwrite with another record.
@@ -60,12 +62,13 @@ void TestOne()
     TestStruct testStructB  =
     {
         .fieldA     = false,
-        .fieldB     = 456,
-        .fieldC     = 654,
+        .fieldB     = 128U,
+        .fieldC     = 255U,
     };
 PersistentCircularBufferShowState(&pcbAContext);
     PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructB );
-PersistentCircularBufferShowState(&pcbAContext);
+    DebugHexDumpBytes( (uint8_t*)&testStructA, sizeof(testStructA) );
+    DebugHexDumpBytes( (uint8_t*)&testStructB, sizeof(testStructB) );
 
     //
     // Read the last record.
