@@ -10,12 +10,15 @@
 #define __UARTTRANSMITTER_H__
 
 
+#include "Common.h"
 
-#include "EventQueue.h"
+void CLEAR_TX();
+void SET_TX();
 
 
 void uartISR();
 void UARTTransmitByte( uint8_t byte );
+
 
 #endif
 

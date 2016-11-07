@@ -51,9 +51,12 @@ include $(SOURCE_LIBRARY)/Implementations/StdioDebugText/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/Safety/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/TextFormatter/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/BlockDevice/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/FLASHDevice/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/LinuxBoardSupport/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/PersistentCircularBuffer/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/NonFatalAssertions/Build.mk
 include $(SOURCE_LIBRARY)/Implementations/ErrorHandling/Build.mk
+include $(SOURCE_LIBRARY)/Implementations/UARTTransmitter/Build.mk
 
 
 #

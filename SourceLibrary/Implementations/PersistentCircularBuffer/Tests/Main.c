@@ -43,17 +43,14 @@ void Reset()
 //
 void TestOne()
 {
-    char    test[16]    = {100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115};
-    DebugHexDumpBytes( (uint8_t*)&test, sizeof(test) );
-
     //
     // Write one record at the last position.
     //
     TestStruct testStructA  =
     {
         .fieldA     = true,
-        .fieldB     = 123,
-        .fieldC     = 321,
+        .fieldB     = 0xab,
+        .fieldC     = 0xfa,
     };
 PersistentCircularBufferShowState(&pcbAContext);
     PersistentCircularBufferAdd( &pcbAContext, (uint8_t*)&testStructA );
@@ -65,13 +62,16 @@ PersistentCircularBufferShowState(&pcbAContext);
     TestStruct testStructB  =
     {
         .fieldA     = false,
-        .fieldB     = 128U,
-        .fieldC     = 255U,
+        .fieldB     = 0x80,
+        .fieldC     = 0xfe,
     };
 PersistentCircularBufferShowState(&pcbAContext);
-    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructB );
+    //PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&testStructB );
+    uint8_t     test[]  = {0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11,0x11};
+    PersistentCircularBufferUpdateLast( &pcbAContext, (uint8_t*)&test[0] );
     DebugHexDumpBytes( (uint8_t*)&testStructA, sizeof(testStructA) );
     DebugHexDumpBytes( (uint8_t*)&testStructB, sizeof(testStructB) );
+    DebugHexDumpBytes( (uint8_t*)&test[0],     sizeof(testStructB) );
 
     //
     // Read the last record.
@@ -80,6 +80,7 @@ PersistentCircularBufferShowState(&pcbAContext);
     //PersistentCircularBufferBack( &pcbAContext );
     TestStruct  readBackA   = {0};
     PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
+    DebugHexDumpBytes( (uint8_t*)&readBackA, sizeof(readBackA) );
 
     //
     // Check the record we read back.

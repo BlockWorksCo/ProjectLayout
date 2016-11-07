@@ -12,25 +12,11 @@
 
 
 #include "UARTTransmitter.h"
-#include "Common.h"
 
 
 PRIVATE uint8_t     byteToTransmit;
 PRIVATE uint8_t     bitNumber;
 PRIVATE uint8_t     state;
-
-
-bool    txState = false;
-
-void SET_TX()
-{
-    txState  = true;
-}
-
-void CLEAR_TX()
-{
-    txState = false;
-}
 
 
 
