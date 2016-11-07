@@ -6,11 +6,9 @@
 //
 
 
-#ifndef __UARTTRANSMITTER_H__
-#define __UARTTRANSMITTER_H__
 
 
-
+#include "Common.h"
 #include "UARTTransmitter.h"
 
 
@@ -65,9 +63,6 @@ void UARTTransmitByte( uint8_t byte )
 
 
 }
-
-#endif
-
 
 
 
