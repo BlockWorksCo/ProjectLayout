@@ -47,7 +47,7 @@ void TestOne()
     //
     // Set up the raw data.
     //
-    bool    testData[]  = {1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1};
+    bool    testData[]  = {1,1,1,1, 0,0,0,0, 1,1,1,1, 0,0,0,0, 1,1,1,1, 0,0,0,0, 1,1,1,1, 0,0,0,0, 1,1,1,1, 0,0,0,0};
     rawData         = &testData[0];
     sampleNumber    = 0;
 
@@ -63,7 +63,7 @@ void TestOne()
     // Check the received byte.
     //
     uint8_t data    = GetUARTReceivedByte();
-    AssertThat( data == 0x00,  "received byte is incorrect (%d)", data );
+    AssertThat( data == 0x55,  "received byte is incorrect (%02x)", data );
 }
 
 

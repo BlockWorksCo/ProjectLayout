@@ -10,6 +10,7 @@
 
 #include "Common.h"
 #include "UARTTransmitter.h"
+#include "ErrorHandling.h"
 
 
 
@@ -158,6 +159,7 @@ void UARTTransmitHandler()
 
         default:
         {
+            PANIC();
             break;
         }
     }
