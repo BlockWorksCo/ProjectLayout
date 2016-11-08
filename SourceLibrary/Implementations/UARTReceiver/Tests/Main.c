@@ -28,6 +28,10 @@ void Reset()
 //
 void TestOne()
 {
+    UARTReceiveHandler();
+
+    uint8_t data    = GetUARTReceivedByte();
+    AssertThat( data == 0x00,  "received byte is incorrect (%d)", data );
 }
 
 

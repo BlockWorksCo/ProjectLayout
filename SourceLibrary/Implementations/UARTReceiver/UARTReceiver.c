@@ -39,7 +39,7 @@ void DRIVE_RX()
 
 
 
-void uartRxISR()
+void UARTReceiveHandler()
 {
     if( state == 0 )
     {
@@ -78,12 +78,12 @@ void uartRxISR()
 
 
 
-uint8_t UARTReceiveByte()
+uint8_t GetUARTReceivedByte()
 {
     state = 0;
     while(state <= 9)
     {
-        uartRxISR();
+        UARTReceiveHandler();
     }
 
     return 0;
