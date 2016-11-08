@@ -16,7 +16,8 @@ void CLEAR_TX();
 void SET_TX();
 
 
-void uartISR();
+void ResetUARTTransmitter();
+void UARTTransmitHandler();
 void UARTTransmitByte( uint8_t byte );
 
 
