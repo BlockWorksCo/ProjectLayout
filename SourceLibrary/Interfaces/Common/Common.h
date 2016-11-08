@@ -18,6 +18,9 @@
 
 #define PRIVATE     static
 
+
+#define NUMBER_OF_ELEMENTS(a)   (sizeof(a)/sizeof(a[0]))
+
 #endif
 
 

@@ -17,6 +17,7 @@ PRIVATE uint32_t    bitCount        = 0;
 PRIVATE uint8_t     receivedByte    = 0x00;
 PRIVATE bool        startBit        = false;
 PRIVATE bool        stopBit         = false;
+PRIVATE bool        idle            = true;
 
 
 //
@@ -27,6 +28,7 @@ void ResetUARTReceiver()
     sampleNumber    = 0;
     highCount       = 0;
     bitCount        = 0;
+    idle            = true;
 }
 
 
@@ -36,6 +38,7 @@ void ResetUARTReceiver()
 void ReceivedFullByte()
 {
     DebugPrintf("<Received Byte %02x>\n", receivedByte);
+    idle    = true;
 }
 
 
@@ -101,73 +104,92 @@ void ReceivedLowBit()
 //
 void UARTReceiveHandler()
 {
-    //
-    //
-    //
-    switch(sampleNumber)
+    if( idle == true )
     {
-        case 0:
+        //
+        // We've not received a start bit yet.
+        //
+        if(GET_RX_STATE() == false)
         {
-            if(GET_RX_STATE() == true)
-            {
-                highCount++;
-            }
-            sampleNumber    = 1;
-            break;
-        }
-
-        case 1:
-        {
-            if(GET_RX_STATE() == true)
-            {
-                highCount++;
-            }
-            sampleNumber    = 2;
-            break;
-        }
-
-        case 2:
-        {
-            if(GET_RX_STATE() == true)
-            {
-                highCount++;
-            }
-            sampleNumber    = 3;
-            break;
-        }
-
-
-        case 3:
-        {
-            if(GET_RX_STATE() == true)
-            {
-                highCount++;
-            }
-
             //
+            // We received a low bit while in idle, this is the start bit.
             //
-            //
-            if( highCount >= 3 )
-            {
-                ReceivedHighBit();
-            }
-            else
-            {
-                ReceivedLowBit();
-            }
-
-            highCount       = 0;
-            sampleNumber    = 0;
-
-            break;
-        }
-
-        default:
-        {
-            PANIC();
+            idle    = false;
         }
     }
 
+    //
+    // If we are no longer idle, then process the byte.
+    //
+    if( idle == false )
+    {
+        //
+        // We've received a start bit.
+        //
+        switch(sampleNumber)
+        {
+            case 0:
+            {
+                if(GET_RX_STATE() == true)
+                {
+                    highCount++;
+                }
+                sampleNumber    = 1;
+                break;
+            }
+
+            case 1:
+            {
+                if(GET_RX_STATE() == true)
+                {
+                    highCount++;
+                }
+                sampleNumber    = 2;
+                break;
+            }
+
+            case 2:
+            {
+                if(GET_RX_STATE() == true)
+                {
+                    highCount++;
+                }
+                sampleNumber    = 3;
+                break;
+            }
+
+
+            case 3:
+            {
+                if(GET_RX_STATE() == true)
+                {
+                    highCount++;
+                }
+
+                //
+                // We've received a bit, process it...
+                //
+                if( highCount >= 3 )
+                {
+                    ReceivedHighBit();
+                }
+                else
+                {
+                    ReceivedLowBit();
+                }
+
+                highCount       = 0;
+                sampleNumber    = 0;
+
+                break;
+            }
+
+            default:
+            {
+                PANIC();
+            }
+        }
+    }
 }
 
 

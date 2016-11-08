@@ -54,7 +54,7 @@ void TestOne()
     //
     // Pump the data thru the receiver (8N1 format).
     //
-    for(uint32_t i=0; i<(4*10); i++)
+    for(uint32_t i=0; i<NUMBER_OF_ELEMENTS(testData); i++)
     {
         UARTReceiveHandler();
     }
@@ -75,14 +75,14 @@ void TestTwo()
     //
     // Set up the raw data.
     //
-    bool    testData[]  = {0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 1,1,1,1};
+    bool    testData[]  = {1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 1,1,1,1};
     rawData         = &testData[0];
     sampleNumber    = 0;
 
     //
     // Pump the data thru the receiver (8N1 format).
     //
-    for(uint32_t i=0; i<(4*10); i++)
+    for(uint32_t i=0; i<NUMBER_OF_ELEMENTS(testData); i++)
     {
         UARTReceiveHandler();
     }
