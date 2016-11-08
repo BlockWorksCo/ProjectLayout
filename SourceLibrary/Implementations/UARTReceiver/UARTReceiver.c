@@ -85,6 +85,8 @@ uint8_t UARTReceiveByte()
     {
         uartRxISR();
     }
+
+    return 0;
 }
 
 

@@ -12,11 +12,10 @@
 
 
 #include "Common.h"
-#include "EventQueue.h"
 
 
-void uartRxISR();
-uint8_t UARTReceiveByte();
+void UARTReceiveHandler();
+uint8_t GetUARTReceivedByte();
 
 #endif
 
