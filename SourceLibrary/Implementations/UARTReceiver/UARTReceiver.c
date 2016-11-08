@@ -53,8 +53,8 @@ void ReceivedHighBit()
 
     if( (bitCount >= 1) && (bitCount < 9) )
     {
-        receivedByte    <<= 1;
-        receivedByte    |= 0x01;
+        receivedByte    >>= 1;
+        receivedByte    |= 0x80;
     }
 
     if( bitCount == 9 )
@@ -84,7 +84,7 @@ void ReceivedLowBit()
 
     if( (bitCount >= 1) && (bitCount < 9) )
     {
-        receivedByte    <<= 1;
+        receivedByte    >>= 1;
     }
 
     if( bitCount == 9 )
