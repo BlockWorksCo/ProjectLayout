@@ -14,6 +14,9 @@
 #include "Common.h"
 
 
+bool GET_RX_STATE();
+
+void ResetUARTReceiver();
 void UARTReceiveHandler();
 uint8_t GetUARTReceivedByte();
 

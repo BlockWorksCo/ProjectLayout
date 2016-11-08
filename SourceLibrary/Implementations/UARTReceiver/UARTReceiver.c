@@ -10,82 +10,29 @@
 #include "ErrorHandling.h"
 
 
-PRIVATE bool    rxState             = false;
-PRIVATE bool    rxDriven            = false;
-PRIVATE uint8_t state               = 0;
-PRIVATE uint8_t byteBeingReceived   = 0x00;
+PRIVATE uint32_t    sampleNumber    = 0;
 
 
-void SET_RX()
+
+void ResetUARTReceiver()
 {
-    rxState  = true;
+    sampleNumber    = 0;
 }
-
-void CLEAR_RX()
-{
-    rxState = false;
-}
-
-void FLOAT_RX()
-{
-    rxDriven    = false;
-}
-
-void DRIVE_RX()
-{
-    rxDriven = true;
-}
-
-
 
 
 void UARTReceiveHandler()
 {
-    if( state == 0 )
-    {
-        //
-        // Start bit.
-        //
-        FLOAT_RX();
-        //CLEAR_TX();
-    }
-    else if( (state>=1) && (state<9) )
-    {
-        uint8_t     bitNumber = state-1;
+    bool    sample  = GET_RX_STATE();
 
-        //
-        // data bits
-        //
-        if( (byteBeingReceived&(1<<bitNumber)) != 0)
-        {
-            //SET_TX();
-        }
-        else
-        {
-            //CLEAR_TX();
-        }
-    }
-    else if( state == 9 )
-    {
-        //
-        // Stop bit.
-        //
-        //SET_TX();
-    }
 
-    state++;    
+
+    sampleNumber++;
 }
 
 
 
 uint8_t GetUARTReceivedByte()
 {
-    state = 0;
-    while(state <= 9)
-    {
-        UARTReceiveHandler();
-    }
-
     return 0;
 }
 
