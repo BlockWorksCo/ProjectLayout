@@ -33,6 +33,15 @@ void ResetUARTReceiver()
 //
 //
 //
+void ReceivedFullByte()
+{
+    DebugPrintf("<Received Byte %02x>\n", receivedByte);
+}
+
+
+//
+//
+//
 void ReceivedHighBit()
 {
     DebugPrintf("%d <High>\n", bitCount);
@@ -48,9 +57,17 @@ void ReceivedHighBit()
         receivedByte    |= 0x01;
     }
 
-    if( bitCount == 8 )
+    if( bitCount == 9 )
     {
         stopBit    = true;
+
+        //
+        // If the startBit is low and the stopBit is high, we've received a full byte.'
+        //
+        if(startBit == false)
+        {
+            ReceivedFullByte();
+        }
     }
 
     bitCount++;
@@ -65,12 +82,12 @@ void ReceivedLowBit()
         startBit    = false;
     }
 
-    if( (bitCount >= 1) && (bitCount < 8) )
+    if( (bitCount >= 1) && (bitCount < 9) )
     {
         receivedByte    <<= 1;
     }
 
-    if( bitCount == 8 )
+    if( bitCount == 9 )
     {
         stopBit    = false;
     }
