@@ -51,6 +51,7 @@ uint8_t         numberOfBytesToTranfer              = 0;
 uint8_t         state                               = 0;
 bool            transferFinished                    = true;
 uint8_t*        bytes                               = 0;
+uint8_t         currentByteToTransmit               = 0;
 
 
 
@@ -59,7 +60,8 @@ uint8_t*        bytes                               = 0;
 //
 void ResetI2CMaster()
 {
-
+    SET_SDA();
+    SET_SCL();
 }
 
 
@@ -76,6 +78,8 @@ void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
     address                 = _address;
     numberOfBytesToTranfer  = _numberOfBytes;
     bytes                   = _bytes;
+
+    currentByteToTransmit   = address & (~0x1);
 }
 
 
@@ -111,7 +115,17 @@ void Stop()
 
 
 
-
+void SetSDAAsPerData( bool data )
+{
+    if(data == true)
+    {
+        SET_SDA();
+    }
+    else
+    {
+        CLEAR_SDA();
+    }
+}
 
 
 //
@@ -119,82 +133,136 @@ void Stop()
 //
 void WriteEngine()
 {
-    const uint8_t   numberOfStartStates     = 3;
-    const uint8_t   numberOfStopStates      = 3;
-    const uint8_t   numberOfBitsPerByte     = 8+1;                      // data+ACK.
-    const uint8_t   numberOfStatesPerByte   = numberOfBitsPerByte*2;    // lo clock & hi clock.
-
-
-    if(state == 0)
+    switch(state)
     {
-        //
-        // Start condition.
-        //
-        DRIVE_SDA();
-        SET_SDA();
-        SET_SCL();
-    }
-    else if(state == 1)
-    {
-        //
-        // Start condition.
-        //
-        CLEAR_SDA();
-    }
-    else if(state == 2)
-    {
-        //
-        // Start condition.
-        //
-        SET_SCL();
-    }
-    else if( state < (numberOfBytesToTranfer*numberOfStatesPerByte)+numberOfStartStates )
-    {
-        uint8_t             byteIndex   = (state-3)/(2*9);
-        uint8_t             byte        = bytes[ byteIndex ];
-        volatile uint8_t    bitInByte   = (state - ((byteIndex*numberOfStatesPerByte) + numberOfStartStates)) / 2;
-
-        //
-        // Set the data/clock lines as appropriate.
-        //
-        if( (state%2) != 0)
+        case 0:
         {
-            CLEAR_SCL();        // bring clock down before setting new data.
-            if(bitInByte == 8)
-            {
-                FLOAT_SDA();
-            }
-            else
-            {
-                DRIVE_SDA();
-
-                volatile uint8_t bitValue = byte&(0x80>>bitInByte);
-//DPRINTF("                        bn=%d byte=%02x\n",bitInByte,byte);                
-                if( bitValue != 0 )
-                {
-                    SET_SDA();
-                }
-                else
-                {
-                    CLEAR_SDA();
-                }
-
-            }
+            CLEAR_SDA();    // Start condition.
+            break;
         }
-        else
+
+        case 1:
         {
+            CLEAR_SCL();    // Start condition.
+            break;
+        }
+
+        case 2:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 0) & 0x01 );    // b0
             SET_SCL();
-
-            if(bitInByte == 8)
-            {
-                acksForBytes[byteIndex] = GET_SDA();         // detect ACK.                                
-            }
+            break;
         }
-    }
-    else
-    {
-        //Call( completionEvent );
-        masterState     = Idle;
+
+        case 3:
+        {
+            CLEAR_SCL();
+            break;
+        }
+
+        case 4:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 1) & 0x01 );    // b1
+            SET_SCL();
+            break;
+        }
+
+        case 5:
+        {
+            CLEAR_SCL();
+            break;
+        }
+
+        case 6:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 2) & 0x01 );    // b2
+            SET_SCL();
+            break;
+        }
+
+        case 7:
+        {
+            CLEAR_SCL();
+            break;
+        }
+
+        case 8:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 3) & 0x01 );    // b3
+            SET_SCL();
+            break;
+        }
+
+        case 9:
+        {
+            CLEAR_SCL();
+            break;
+        }
+
+        case 10:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 4) & 0x01 );    // b4
+            SET_SCL();
+            break;
+        }
+
+        case 11:
+        {
+            CLEAR_SCL();
+            break;
+        }
+
+        case 12:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 5) & 0x01 );    // b5
+            SET_SCL();
+            break;
+        }
+
+        case 13:
+        {
+            CLEAR_SCL();
+            break;
+        }
+
+        case 14:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 6) & 0x01 );    // b6
+            SET_SCL();
+            break;
+        }
+
+        case 15:
+        {
+            CLEAR_SCL();
+            break;
+        }
+
+        case 16:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 7) & 0x01 );    // b7
+            SET_SCL();
+            break;
+        }
+
+        case 17:
+        {
+            CLEAR_SCL();
+            break;
+        }
+
+        case 18:
+        {
+            // Get ACK bit.
+            masterState     = Idle;
+            break;
+        }
+
+        default:
+        {
+            PANIC();
+            break;
+        }
     }
 
     state++;
@@ -215,7 +283,6 @@ void ReadEngine()
         //
         // Start condition.
         //
-        DRIVE_SDA();
         SET_SDA();
         SET_SCL();
     }
@@ -232,7 +299,7 @@ void ReadEngine()
         // Start condition.
         //
         CLEAR_SCL();
-        FLOAT_SDA();
+        SET_SDA();
     }
     else if( state < (numberOfBytesToTranfer*numberOfStatesPerByte)+numberOfStartStates )
     {
@@ -258,20 +325,18 @@ void ReadEngine()
         else
         {
             SET_SCL();
-            FLOAT_SDA();
 
             // TODO: Wait a bit to settle....
 
             if(bitInByte == 8)
             {
-                DRIVE_SDA();
                 if(I2CMasterByteReceived( byte ) == true)
                 {
                     CLEAR_SDA();
                 }
                 else
                 {
-                    DRIVE_SDA();
+                    SET_SDA();
                 }
             }
             else
@@ -310,7 +375,6 @@ void StopEngine()
         //
         // Stop condition 0
         //
-        DRIVE_SDA();
         CLEAR_SCL();
         CLEAR_SDA();
     }

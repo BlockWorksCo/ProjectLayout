@@ -25,9 +25,8 @@ typedef uint8_t     I2CAddress;
 //
 void SET_SDA();
 void CLEAR_SDA();
-void DRIVE_SDA();
-void FLOAT_SDA();
 bool GET_SDA();
+
 void SET_SCL();
 void CLEAR_SCL();
 
