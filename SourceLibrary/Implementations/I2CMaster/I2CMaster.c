@@ -10,59 +10,7 @@
 
 #include "I2CMaster.h"
 #include "ErrorHandling.h"
-#include "EventQueue.h"
 #include "Utilities.h"
-
-
-
-
-bool            sda                                 = false;
-bool            sdaDriven                           = false;
-bool            scl                                 = false;
-
-
-void SET_SDA()
-{
-    //DPRINTF("SET_SDA\n");
-    sda = true;
-}
-
-void CLEAR_SDA()
-{
-    //DPRINTF("CLEAR_SDA\n");
-    sda = false;
-}
-
-void DRIVE_SDA()
-{
-    //DPRINTF("DRIVE_SDA\n");
-    sdaDriven = true;
-}
-
-void FLOAT_SDA()
-{
-    //DPRINTF("FLOAT_SDA\n");
-    sdaDriven = false;
-}
-
-bool GET_SDA()
-{
-    //DPRINTF("GET_SDA\n");
-    return sda;
-}
-
-void SET_SCL()
-{
-    //DPRINTF("SET_SCL\n");
-    scl = true;
-}
-
-void CLEAR_SCL()
-{
-    //DPRINTF("CLEAR_SCL\n");
-    scl = false;
-}
-
 
 
 
@@ -96,48 +44,58 @@ typedef enum
 I2CMasterState  masterState                         = Idle;
 uint32_t        nextEdgeTime                        = 0;
 bool            nextValue                           = 0;
+I2CAddress      address                             = 0;
 uint8_t         dataToTransmit[maxBytesToTransmit]  = {0};
 uint8_t         acksForBytes[maxBytesToTransmit]    = {0};
 uint8_t         numberOfBytesToTranfer              = 0;
 uint8_t         state                               = 0;
 bool            transferFinished                    = true;
-Handler         completionEvent                     = 0;
 uint8_t*        bytes                               = 0;
-bool            (*byteReceivedCallback)(uint8_t);
 
 
+
 //
 //
 //
-void I2CWrite(uint8_t* _bytes, uint8_t _numberOfBytes, Handler _completionEvent )
+void ResetI2CMaster()
 {
-    completionEvent     = _completionEvent;
+
+}
+
+
+
+
+//
+//
+//
+void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
+{
     masterState         = Transmitting;
     state               = 0;
 
+    address                 = _address;
     numberOfBytesToTranfer  = _numberOfBytes;
     bytes                   = _bytes;
 }
 
+
 //
 //
 //
-void I2CRead( bool (*_byteReceivedCallback)(uint8_t), uint8_t _numberOfBytes , Handler _completionEvent )
+void I2CRead( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 {
     numberOfBytesToTranfer  = _numberOfBytes;
-    completionEvent     = _completionEvent;        
     masterState         = Receiving;
     state               = 0;
-
-    byteReceivedCallback = _byteReceivedCallback;
+    address                 = _address;
 }
 
+
 //
 //
 //
-void Stop( Handler _completionEvent )
+void Stop()
 {
-    completionEvent     = _completionEvent;        
     masterState         = Stopping;
     state               = 0;
 }
@@ -235,7 +193,7 @@ void WriteEngine()
     }
     else
     {
-        Call( completionEvent );
+        //Call( completionEvent );
         masterState     = Idle;
     }
 
@@ -307,7 +265,7 @@ void ReadEngine()
             if(bitInByte == 8)
             {
                 DRIVE_SDA();
-                if(byteReceivedCallback( byte ) == true)
+                if(I2CMasterByteReceived( byte ) == true)
                 {
                     CLEAR_SDA();
                 }
@@ -329,7 +287,7 @@ void ReadEngine()
     }
     else
     {
-        Call( completionEvent );
+        //Call( completionEvent );
         masterState     = Idle;
     }
 
@@ -379,7 +337,7 @@ void StopEngine()
         SET_SCL();
         transferFinished = true;
 
-        Call( completionEvent );
+        //Call( completionEvent );
         masterState     = Idle;
     }
 
@@ -394,7 +352,7 @@ void StopEngine()
 
 
 
-
+#if 0
 
 void I2CDisplay()
 {
@@ -443,12 +401,12 @@ void I2CDisplay()
     }    
 }
 
+#endif
 
-
 //
 //
 //
-void i2cISR()
+void I2CMasterHandler()
 {
     switch( masterState )
     {

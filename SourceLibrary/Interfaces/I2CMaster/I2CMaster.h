@@ -12,19 +12,38 @@
 #define __I2CMASTER_H__
 
 #include "Common.h"
-#include "EventQueue.h"
+
+
+//
+//
+//
+typedef uint8_t     I2CAddress;
+
+
+//
+//
+//
+void SET_SDA();
+void CLEAR_SDA();
+void DRIVE_SDA();
+void FLOAT_SDA();
+bool GET_SDA();
+void SET_SCL();
+void CLEAR_SCL();
 
 
 
+//
+//
+//
+void ResetI2CMaster();
+void I2CMasterHandler();
 
-void i2cISR();
-void I2CWrite(uint8_t* _bytes, uint8_t _numberOfBytes, Handler _completionEvent );
-void I2CRead( bool (*_byteReceivedCallback)(uint8_t), uint8_t _numberOfBytes , Handler _completionEvent );
-void Stop( Handler _completionEvent );
+bool I2CMasterByteReceived( uint8_t byte );
+void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes );
+void I2CRead( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes );
+void Stop();
 
-
-
-void I2CDisplay();
 
 #endif
 
