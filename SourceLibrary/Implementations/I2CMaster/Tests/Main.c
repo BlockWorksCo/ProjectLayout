@@ -22,26 +22,26 @@ bool I2CMasterByteReceived( uint8_t byte )
 
 void SET_SDA()
 {
-    //DebugPrintf("SET_SDA\n");
+    // Change to input, allowing pull-up to raise the level (open drain).
     sdaData[cycleCount] = true;
 }
 
 void CLEAR_SDA()
 {
-    //DebugPrintf("CLEAR_SDA\n");
+    // Change to output, driving down to ground (open drain).
     sdaData[cycleCount] = false;
 }
 
 
 void SET_SCL()
 {
-    //DebugPrintf("SET_SCL\n");
+    // Change to input, allowing pull-up to raise the level (open drain).
     sclData[cycleCount] = true;
 }
 
 void CLEAR_SCL()
 {
-    //DebugPrintf("CLEAR_SCL\n");
+    // Change to output, driving down to ground (open drain).
     sclData[cycleCount] = false;
 }
 
@@ -49,6 +49,7 @@ void CLEAR_SCL()
 
 bool GET_SDA()
 {
+    // Change to input, allowing pull-up to raise the level or other device to drive it down (open drain).
     return true;
 }
 
