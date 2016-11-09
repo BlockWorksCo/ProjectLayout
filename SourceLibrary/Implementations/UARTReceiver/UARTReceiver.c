@@ -38,7 +38,8 @@ void ResetUARTReceiver()
 void ReceivedFullByte()
 {
     DebugPrintf("<Received Byte %02x>\n", receivedByte);
-    idle    = true;
+
+    ResetUARTReceiver();
 }
 
 
@@ -47,7 +48,7 @@ void ReceivedFullByte()
 //
 void ReceivedHighBit()
 {
-    DebugPrintf("%d <High>\n", bitCount);
+    DebugPrintf("  b%d <High>\n", bitCount);
 
     if( bitCount == 0 )
     {
@@ -69,6 +70,7 @@ void ReceivedHighBit()
         //
         if(startBit == false)
         {
+            DebugPrintf("Stop Bit detected\n");
             ReceivedFullByte();
         }
     }
@@ -78,7 +80,7 @@ void ReceivedHighBit()
 
 void ReceivedLowBit()
 {
-    DebugPrintf("%d <Low>\n", bitCount);
+    DebugPrintf("  b%d <Low>\n", bitCount);
 
     if( bitCount == 0 )
     {
@@ -104,17 +106,20 @@ void ReceivedLowBit()
 //
 void UARTReceiveHandler()
 {
+    bool    currentState    = GET_RX_STATE();
+
     if( idle == true )
     {
         //
         // We've not received a start bit yet.
         //
-        if(GET_RX_STATE() == false)
+        if( currentState == false)
         {
             //
             // We received a low bit while in idle, this is the start bit.
             //
             idle    = false;
+            DebugPrintf("\nStart Bit detected\n");
         }
     }
 
@@ -130,7 +135,7 @@ void UARTReceiveHandler()
         {
             case 0:
             {
-                if(GET_RX_STATE() == true)
+                if(currentState == true)
                 {
                     highCount++;
                 }
@@ -140,7 +145,7 @@ void UARTReceiveHandler()
 
             case 1:
             {
-                if(GET_RX_STATE() == true)
+                if(currentState == true)
                 {
                     highCount++;
                 }
@@ -150,7 +155,7 @@ void UARTReceiveHandler()
 
             case 2:
             {
-                if(GET_RX_STATE() == true)
+                if(currentState == true)
                 {
                     highCount++;
                 }
@@ -161,7 +166,7 @@ void UARTReceiveHandler()
 
             case 3:
             {
-                if(GET_RX_STATE() == true)
+                if(currentState == true)
                 {
                     highCount++;
                 }
@@ -169,6 +174,7 @@ void UARTReceiveHandler()
                 //
                 // We've received a bit, process it...
                 //
+                DebugPrintf("  %d/4 ",highCount);
                 if( highCount >= 3 )
                 {
                     ReceivedHighBit();
@@ -196,7 +202,14 @@ void UARTReceiveHandler()
 
 uint8_t GetUARTReceivedByte()
 {
-    return receivedByte;
+    if( idle == true)
+    {
+        return receivedByte;
+    }
+    else
+    {
+        return 0x00;
+    }
 }
 
 

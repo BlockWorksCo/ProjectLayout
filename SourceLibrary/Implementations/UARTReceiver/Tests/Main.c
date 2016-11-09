@@ -22,6 +22,8 @@ bool GET_RX_STATE()
     bool    sample  = rawData[sampleNumber];
     sampleNumber++;
 
+    DebugPrintf("%d ", sample);
+
     return sample;
 }
 
@@ -97,6 +99,50 @@ void TestTwo()
 
 
 
+//
+//
+//
+void TestThree()
+{
+    //
+    // Set up the raw data.
+    //
+    bool    testData[]  = {1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 1,1,1,1, 0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 1,1,1,1 };
+    rawData         = &testData[0];
+    sampleNumber    = 0;
+
+    //
+    // Pump the data thru the receiver (8N1 format).
+    //
+    for(uint32_t i=0; i<14+40; i++)
+    {
+        UARTReceiveHandler();
+    }
+
+    //
+    // Check the received byte.
+    //
+    uint8_t data0   = GetUARTReceivedByte();
+    AssertThat( data0 == 0x03,  "received byte is incorrect (%02x)", data0 );
+
+    //
+    // Pump the data thru the receiver (8N1 format).
+    //
+    for(uint32_t i=0; i<40; i++)
+    {
+        UARTReceiveHandler();
+    }
+
+    //
+    // Check the received byte.
+    //
+    uint8_t data1   = GetUARTReceivedByte();
+    AssertThat( data1 == 0x03,  "received byte is incorrect (%02x)", data1 );
+}
+
+
+
+
 
 
 //
@@ -114,6 +160,10 @@ int main()
     Reset();
     DebugPrintf("TestTwo:\n");
     TestTwo();
+
+    Reset();
+    DebugPrintf("TestThree:\n");
+    TestThree();
 
     DebugPrintf("\nComplete.\n");
 }
