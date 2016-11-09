@@ -253,14 +253,15 @@ void WriteEngine()
 
         case 18:
         {
-            SET_SCL();
+            SET_SCL();      // ACK bit should be set by device now.
             break;
         }
 
         case 19:
         {
-            SET_SCL();
-            // TODO: Get ACK bit.
+            CLEAR_SCL();
+            SET_SDA();
+            bool ackValue = GET_SDA(); // TODO: Get ACK bit.
             break;
         }
 

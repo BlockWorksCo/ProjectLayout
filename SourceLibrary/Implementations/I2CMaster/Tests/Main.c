@@ -75,10 +75,10 @@ void Reset()
 void TestOne()
 {
     //
-    //
+    // Setup for an I2C write of 4 bytes to address 0x52.
     //
     uint8_t     data[]  = {0x01,0x02,0x03,0x04};
-    I2CWrite( 0x02, &data[0], sizeof(data) );
+    I2CWrite( 0x52, &data[0], sizeof(data) );
 
     //
     // Pump the data thru the receiver (8N1 format).
@@ -93,7 +93,7 @@ void TestOne()
     }
 
     //
-    //
+    // Show the data.
     //
     DebugPrintf("SCL: ");
     for(uint32_t i=0; i<cycleCount; i++)
@@ -110,7 +110,7 @@ void TestOne()
     DebugPrintf("\n");
 
     //
-    // Check the received byte.
+    // Check the received data.
     //
     //AssertThat( data == 0xaa,  "received byte is incorrect (%02x)", data );
 }
