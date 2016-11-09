@@ -111,8 +111,12 @@ void TestOne()
 
     //
     // Check the received data.
-    //
-    //AssertThat( data == 0xaa,  "received byte is incorrect (%02x)", data );
+    //                         I S   0   1   2   3   4   5   6   7   A   S I
+    bool    goodSCLData[]   = {1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1};
+    bool    goodSDAData[]   = {1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1};
+    AssertThat( cycleCount == 23,                                           "cycle count is incorrect (%d)", cycleCount );
+    AssertThat( memcmp(&goodSCLData[0], &sclData[0], cycleCount) == 0,      "SCL data is incorrect (%d)", cycleCount );
+    AssertThat( memcmp(&goodSDAData[0], &sdaData[0], cycleCount) == 0,      "SDA data is incorrect (%d)", cycleCount );
 }
 
 
