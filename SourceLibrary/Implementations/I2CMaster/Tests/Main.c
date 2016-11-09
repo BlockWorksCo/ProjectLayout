@@ -78,12 +78,12 @@ void TestOne()
     //
     //
     uint8_t     data[]  = {0x01,0x02,0x03,0x04};
-    I2CWrite( 0xA5, &data[0], sizeof(data) );
+    I2CWrite( 0x02, &data[0], sizeof(data) );
 
     //
     // Pump the data thru the receiver (8N1 format).
     //
-    for(uint32_t i=0; i<20; i++)
+    for(uint32_t i=0; i<22; i++)
     {
         I2CMasterHandler();
 

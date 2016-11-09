@@ -149,7 +149,7 @@ void WriteEngine()
 
         case 2:
         {
-            SetSDAAsPerData( (currentByteToTransmit >> 0) & 0x01 );    // b0
+            SetSDAAsPerData( (currentByteToTransmit >> 7) & 0x01 );    // b7
             SET_SCL();
             break;
         }
@@ -162,7 +162,7 @@ void WriteEngine()
 
         case 4:
         {
-            SetSDAAsPerData( (currentByteToTransmit >> 1) & 0x01 );    // b1
+            SetSDAAsPerData( (currentByteToTransmit >> 6) & 0x01 );    // b6
             SET_SCL();
             break;
         }
@@ -175,7 +175,7 @@ void WriteEngine()
 
         case 6:
         {
-            SetSDAAsPerData( (currentByteToTransmit >> 2) & 0x01 );    // b2
+            SetSDAAsPerData( (currentByteToTransmit >> 5) & 0x01 );    // b5
             SET_SCL();
             break;
         }
@@ -188,7 +188,7 @@ void WriteEngine()
 
         case 8:
         {
-            SetSDAAsPerData( (currentByteToTransmit >> 3) & 0x01 );    // b3
+            SetSDAAsPerData( (currentByteToTransmit >> 4) & 0x01 );    // b4
             SET_SCL();
             break;
         }
@@ -201,7 +201,7 @@ void WriteEngine()
 
         case 10:
         {
-            SetSDAAsPerData( (currentByteToTransmit >> 4) & 0x01 );    // b4
+            SetSDAAsPerData( (currentByteToTransmit >> 3) & 0x01 );    // b3
             SET_SCL();
             break;
         }
@@ -214,7 +214,7 @@ void WriteEngine()
 
         case 12:
         {
-            SetSDAAsPerData( (currentByteToTransmit >> 5) & 0x01 );    // b5
+            SetSDAAsPerData( (currentByteToTransmit >> 2) & 0x01 );    // b2
             SET_SCL();
             break;
         }
@@ -227,7 +227,7 @@ void WriteEngine()
 
         case 14:
         {
-            SetSDAAsPerData( (currentByteToTransmit >> 6) & 0x01 );    // b6
+            SetSDAAsPerData( (currentByteToTransmit >> 1) & 0x01 );    // b1
             SET_SCL();
             break;
         }
@@ -240,7 +240,7 @@ void WriteEngine()
 
         case 16:
         {
-            SetSDAAsPerData( (currentByteToTransmit >> 7) & 0x01 );    // b7
+            SetSDAAsPerData( (currentByteToTransmit >> 0) & 0x01 );    // b0
             SET_SCL();
             break;
         }
@@ -253,7 +253,29 @@ void WriteEngine()
 
         case 18:
         {
-            // Get ACK bit.
+            SET_SCL();
+            break;
+        }
+
+        case 19:
+        {
+            SET_SCL();
+            // TODO: Get ACK bit.
+            break;
+        }
+
+        case 20:
+        {
+            CLEAR_SDA();
+            SET_SCL();                          // stop condition
+            // TODO: Get ACK bit.
+            break;
+        }
+
+        case 21:
+        {
+            SET_SDA();
+            SET_SCL();                          // stop condition
             masterState     = Idle;
             break;
         }
