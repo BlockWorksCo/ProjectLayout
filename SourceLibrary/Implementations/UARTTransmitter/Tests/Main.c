@@ -40,7 +40,7 @@ void Reset()
 
 
 //
-//
+// Output a single byte, leaving line in an idle state.
 //
 void TestOne()
 {
@@ -89,16 +89,6 @@ void TestOne()
 }
 
 
-//
-//
-//
-void TestTwo()
-{
-    AssertThat( txState == false,  "fieldA is incorrect (%d)", txState );
-}
-
-
-
 
 
 
@@ -113,10 +103,6 @@ int main()
     Reset();
     DebugPrintf("TestOne:\n");
     TestOne();
-
-    Reset();
-    DebugPrintf("TestTwo:\n");
-    TestTwo();
 
     DebugPrintf("\nComplete.\n");
 }
