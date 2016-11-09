@@ -120,6 +120,7 @@ void UARTReceiveHandler()
             //
             idle    = false;
             DebugPrintf("\nStart Bit detected\n");
+            bitCount    = 0;
         }
     }
 

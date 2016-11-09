@@ -107,7 +107,7 @@ void TestThree()
     //
     // Set up the raw data.
     //
-    bool    testData[]  = {1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 1,1,1,1, 0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 1,1,1,1 };
+    bool    testData[]  = {1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 1,1,1,1, 0,0,0,0, 0,0,0,0, 1,1,1,1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 1,1,1,1 };
     rawData         = &testData[0];
     sampleNumber    = 0;
 
@@ -137,7 +137,7 @@ void TestThree()
     // Check the received byte.
     //
     uint8_t data1   = GetUARTReceivedByte();
-    AssertThat( data1 == 0x03,  "received byte is incorrect (%02x)", data1 );
+    AssertThat( data1 == 0x06,  "received byte is incorrect (%02x)", data1 );
 }
 
 
