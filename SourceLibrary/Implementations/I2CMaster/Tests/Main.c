@@ -18,32 +18,32 @@ uint32_t    sclDataCount    = 0;
 
 bool I2CMasterByteReceived( uint8_t byte )
 {
-    return true;
+    return false;
 }
 
 void SET_SDA()
 {
-    //DPRINTF("SET_SDA\n");
-    sdaData[sdaDataCount++] = true;
+    //DebugPrintf("SET_SDA\n");
+    sdaData[sdaDataCount] = true;
 }
 
 void CLEAR_SDA()
 {
-    //DPRINTF("CLEAR_SDA\n");
-    sdaData[sdaDataCount++] = false;
+    //DebugPrintf("CLEAR_SDA\n");
+    sdaData[sdaDataCount] = false;
 }
 
 
 void SET_SCL()
 {
-    //DPRINTF("SET_SCL\n");
-    sclData[sclDataCount++] = true;
+    //DebugPrintf("SET_SCL\n");
+    sclData[sclDataCount] = true;
 }
 
 void CLEAR_SCL()
 {
-    //DPRINTF("CLEAR_SCL\n");
-    sclData[sclDataCount++] = true;
+    //DebugPrintf("CLEAR_SCL\n");
+    sclData[sclDataCount] = true;
 }
 
 
@@ -118,7 +118,26 @@ void TestOne()
     for(uint32_t i=0; i<20; i++)
     {
         I2CMasterHandler();
+        sclDataCount++;
+        sdaDataCount++;
     }
+
+    //
+    //
+    //
+    DebugPrintf("SCL: ");
+    for(uint32_t i=0; i<sclDataCount; i++)
+    {
+        DebugPrintf("%c", (sclData[i]==true ? '-':'_') );
+    }
+    DebugPrintf("\n");
+
+    DebugPrintf("SDA: ");
+    for(uint32_t i=0; i<sdaDataCount; i++)
+    {
+        DebugPrintf("%c", (sdaData[i]==true ? '-':'_') );
+    }
+    DebugPrintf("\n");
 
     //
     // Check the received byte.
