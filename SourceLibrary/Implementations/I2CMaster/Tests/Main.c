@@ -9,68 +9,71 @@
 #include "DebugText.h"
 
 
-
-PRIVATE bool*       rawData         = NULL;
-PRIVATE uint32_t    sampleNumber   = 0;
-
-
-
-bool            sda                                 = false;
-bool            sdaDriven                           = false;
-bool            scl                                 = false;
-
+bool*       sdaData         = 0;
+uint32_t    sdaDataCount    = 0;
+bool*       sclData         = 0;
+uint32_t    sclDataCount    = 0;
 
 
 
 bool I2CMasterByteReceived( uint8_t byte )
 {
-
+    return true;
 }
 
 void SET_SDA()
 {
     //DPRINTF("SET_SDA\n");
-    sda = true;
+    sdaData[sdaDataCount++] = true;
 }
 
 void CLEAR_SDA()
 {
     //DPRINTF("CLEAR_SDA\n");
-    sda = false;
+    sdaData[sdaDataCount++] = false;
 }
 
-void DRIVE_SDA()
-{
-    //DPRINTF("DRIVE_SDA\n");
-    sdaDriven = true;
-}
-
-void FLOAT_SDA()
-{
-    //DPRINTF("FLOAT_SDA\n");
-    sdaDriven = false;
-}
-
-bool GET_SDA()
-{
-    bool    sample  = rawData[sampleNumber];
-    sampleNumber++;
-
-    DebugPrintf("%d ", sample);
-
-    return sample;
-}
 
 void SET_SCL()
 {
     //DPRINTF("SET_SCL\n");
-    scl = true;
+    sclData[sclDataCount++] = true;
 }
 
 void CLEAR_SCL()
 {
     //DPRINTF("CLEAR_SCL\n");
-    scl = false;
+    sclData[sclDataCount++] = true;
+}
+
+
+
+
+
+
+
+void DRIVE_SDA()
+{
+    //DPRINTF("DRIVE_SDA\n");
+    //sclData[sdaDataCount++] = true;
+}
+
+void FLOAT_SDA()
+{
+    //DPRINTF("FLOAT_SDA\n");
+    //sdaDriven = false;
+}
+
+bool GET_SDA()
+{
+    //bool    sample  = rawData[sampleNumber];
+    //sampleNumber++;
+
+    //DebugPrintf("%d ", sample);
+
+    //return sample;
+
+    return true;
 }
 
 
@@ -93,16 +96,28 @@ void TestOne()
     //
     // Set up the raw data.
     //
-    bool    testData[]  = {0,0,0,0, 0,0,0,0, 1,1,1,1, 0,0,0,0, 1,1,1,1, 0,0,0,0, 1,1,1,1, 0,0,0,0, 1,1,1,1, 1,1,1,1};
     //rawData         = &testData[0];
     //sampleNumber    = 0;
 
     //
+    //
+    //
+    uint8_t     data[]  = {0x01,0x02,0x03,0x04};
+    I2CWrite( 0xA5, &data[0], sizeof(data) );
+
+    bool        testSDA[128]     = {0};     
+    bool        testSCL[128]     = {0};
+    sdaData         = &testSDA[0];     
+    sclData         = &testSCL[0];
+    sdaDataCount    = 0;
+    sclDataCount    = 0;     
+
+    //
     // Pump the data thru the receiver (8N1 format).
     //
-    for(uint32_t i=0; i<NUMBER_OF_ELEMENTS(testData); i++)
+    for(uint32_t i=0; i<20; i++)
     {
-        //UARTReceiveHandler();
+        I2CMasterHandler();
     }
 
     //
