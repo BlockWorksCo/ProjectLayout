@@ -78,6 +78,7 @@ I2CMasterState          state                               = 0;
 bool                    transferFinished                    = true;
 uint8_t*                bytes                               = 0;
 uint8_t                 currentByteToTransmit               = 0;
+uint32_t                currentDataByteIndex                = 0;
 
 
 
@@ -108,6 +109,7 @@ void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
     bytes                   = _bytes;
 
     currentByteToTransmit   = address & (~0x1);
+    currentDataByteIndex    = 0;
 }
 
 
@@ -166,12 +168,14 @@ void WriteEngine()
         case StartCondition:
         {
             CLEAR_SDA();    // Start condition.
+            state   = StartConditionEnd;
             break;
         }
 
         case StartConditionEnd:
         {
             CLEAR_SCL();    // Start condition.
+            state   = Bit7;
             break;
         }
 
@@ -179,12 +183,14 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 7) & 0x01 );    // b7
             SET_SCL();
+            state   = Bit7End;
             break;
         }
 
         case Bit7End:
         {
             CLEAR_SCL();
+            state   = Bit6;
             break;
         }
 
@@ -192,12 +198,14 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 6) & 0x01 );    // b6
             SET_SCL();
+            state   = Bit6End;
             break;
         }
 
         case Bit6End:
         {
             CLEAR_SCL();
+            state   = Bit5;
             break;
         }
 
@@ -205,12 +213,14 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 5) & 0x01 );    // b5
             SET_SCL();
+            state   = Bit5End;
             break;
         }
 
         case Bit5End:
         {
             CLEAR_SCL();
+            state   = Bit4;
             break;
         }
 
@@ -218,12 +228,14 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 4) & 0x01 );    // b4
             SET_SCL();
+            state   = Bit4End;
             break;
         }
 
         case Bit4End:
         {
             CLEAR_SCL();
+            state   = Bit3;
             break;
         }
 
@@ -231,12 +243,14 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 3) & 0x01 );    // b3
             SET_SCL();
+            state   = Bit3End;
             break;
         }
 
         case Bit3End:
         {
             CLEAR_SCL();
+            state   = Bit2;
             break;
         }
 
@@ -244,12 +258,14 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 2) & 0x01 );    // b2
             SET_SCL();
+            state   = Bit2End;
             break;
         }
 
         case Bit2End:
         {
             CLEAR_SCL();
+            state   = Bit1;
             break;
         }
 
@@ -257,12 +273,14 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 1) & 0x01 );    // b1
             SET_SCL();
+            state   = Bit1End;
             break;
         }
 
         case Bit1End:
         {
             CLEAR_SCL();
+            state   = Bit0;
             break;
         }
 
@@ -270,18 +288,21 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 0) & 0x01 );    // b0
             SET_SCL();
+            state   = Bit0End;
             break;
         }
 
         case Bit0End:
         {
             CLEAR_SCL();
+            state   = Ack;
             break;
         }
 
         case Ack:
         {
             SET_SCL();      // ACK bit should be set by device now.
+            state   = AckEnd;
             break;
         }
 
@@ -290,6 +311,7 @@ void WriteEngine()
             CLEAR_SCL();
             SET_SDA();
             bool ackValue = GET_SDA(); // TODO: Get ACK bit.
+            state   = StopCondition;
             break;
         }
 
@@ -298,6 +320,7 @@ void WriteEngine()
             CLEAR_SDA();
             SET_SCL();                          // stop condition
             // TODO: Get ACK bit.
+            state   = StopConditionEnd;
             break;
         }
 
@@ -306,6 +329,7 @@ void WriteEngine()
             SET_SDA();
             SET_SCL();                          // stop condition
             masterState     = Stopped;
+            state   = Idle;
             break;
         }
 
@@ -316,7 +340,6 @@ void WriteEngine()
         }
     }
 
-    state++;
 }
 
 //
