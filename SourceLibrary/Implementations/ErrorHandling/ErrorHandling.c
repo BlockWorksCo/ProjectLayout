@@ -10,13 +10,14 @@
 
 
 #include "Common.h"
-
+#include "DebugText.h"
 
 
 
 
 void PANIC()
 {
+    DebugPrintf("\n*** PANIC ***\n");
     while(true);
 }
 
