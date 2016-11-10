@@ -78,13 +78,13 @@ void TestOne()
     //
     // Setup for an I2C write of 4 bytes to address 0x52.
     //
-    uint8_t     data[]  = {0x01,0x02,0x03,0x04};
+    uint8_t     data[]  = {0x00,0x01,0x02,0x03};
     I2CWrite( 0x52, &data[0], sizeof(data) );
 
     //
     // Pump the data thru the receiver (8N1 format).
     //
-    for(uint32_t i=0; i<22; i++)
+    for(uint32_t i=0; i<2*(1+9*5+1); i++)
     {
         I2CMasterHandler();
 

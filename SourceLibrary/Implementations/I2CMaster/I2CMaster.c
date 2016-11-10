@@ -73,7 +73,7 @@ bool                    nextValue                           = 0;
 I2CAddress              address                             = 0;
 uint8_t                 dataToTransmit[maxBytesToTransmit]  = {0};
 uint8_t                 acksForBytes[maxBytesToTransmit]    = {0};
-uint8_t                 numberOfBytesToTranfer              = 0;
+uint8_t                 numberOfBytesToTransfer             = 0;
 I2CMasterState          state                               = 0;
 bool                    transferFinished                    = true;
 uint8_t*                bytes                               = 0;
@@ -105,7 +105,7 @@ void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
     state               = StartCondition;
 
     address                 = _address;
-    numberOfBytesToTranfer  = _numberOfBytes;
+    numberOfBytesToTransfer = _numberOfBytes;
     bytes                   = _bytes;
 
     currentByteToTransmit   = address & (~0x1);
@@ -118,7 +118,7 @@ void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 //
 void I2CRead( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 {
-    numberOfBytesToTranfer  = _numberOfBytes;
+    numberOfBytesToTransfer = _numberOfBytes;
     masterState             = Receiving;
     state                   = StartCondition;
     address                 = _address;
@@ -301,6 +301,7 @@ void WriteEngine()
 
         case Ack:
         {
+            SET_SDA();
             SET_SCL();      // ACK bit should be set by device now.
             state   = AckEnd;
             break;
@@ -309,9 +310,18 @@ void WriteEngine()
         case AckEnd:
         {
             CLEAR_SCL();
-            SET_SDA();
             bool ackValue = GET_SDA(); // TODO: Get ACK bit.
-            state   = StopCondition;
+
+            if(currentDataByteIndex < numberOfBytesToTransfer)
+            {
+                currentByteToTransmit   = bytes[currentDataByteIndex];
+                currentDataByteIndex++;
+                state   = Bit7;
+            }
+            else
+            {
+                state   = StopCondition;
+            }
             break;
         }
 
@@ -375,7 +385,7 @@ void ReadEngine()
         CLEAR_SCL();
         SET_SDA();
     }
-    else if( state < (numberOfBytesToTranfer*numberOfStatesPerByte)+numberOfStartStates )
+    else if( state < (numberOfBytesToTransfer*numberOfStatesPerByte)+numberOfStartStates )
     {
         uint8_t         byteIndex   = (state-3)/(2*9);
         static uint8_t  byte        = 0;
