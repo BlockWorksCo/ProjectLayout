@@ -18,7 +18,33 @@
 
 
 
+typedef enum
+{
+    Idle,
+    StartCondition,
+    StartConditionEnd,
+    Bit7,
+    Bit7End,
+    Bit6,
+    Bit6End,
+    Bit5,
+    Bit5End,
+    Bit4,
+    Bit4End,
+    Bit3,
+    Bit3End,
+    Bit2,
+    Bit2End,
+    Bit1,
+    Bit1End,
+    Bit0,
+    Bit0End,
+    Ack,
+    AckEnd,
+    StopCondition,
+    StopConditionEnd,
 
+} I2CMasterState;
 
 
 
@@ -34,24 +60,24 @@ typedef enum
     Transmitting,
     Receiving,
     Stopping,
-    Idle,
+    Stopped,
 
-} I2CMasterState;
+} I2CMasterTransferState;
 
 
 #define    maxBytesToTransmit 64
 
-I2CMasterState  masterState                         = Idle;
-uint32_t        nextEdgeTime                        = 0;
-bool            nextValue                           = 0;
-I2CAddress      address                             = 0;
-uint8_t         dataToTransmit[maxBytesToTransmit]  = {0};
-uint8_t         acksForBytes[maxBytesToTransmit]    = {0};
-uint8_t         numberOfBytesToTranfer              = 0;
-uint8_t         state                               = 0;
-bool            transferFinished                    = true;
-uint8_t*        bytes                               = 0;
-uint8_t         currentByteToTransmit               = 0;
+I2CMasterTransferState  masterState                         = Stopped;
+uint32_t                nextEdgeTime                        = 0;
+bool                    nextValue                           = 0;
+I2CAddress              address                             = 0;
+uint8_t                 dataToTransmit[maxBytesToTransmit]  = {0};
+uint8_t                 acksForBytes[maxBytesToTransmit]    = {0};
+uint8_t                 numberOfBytesToTranfer              = 0;
+I2CMasterState          state                               = 0;
+bool                    transferFinished                    = true;
+uint8_t*                bytes                               = 0;
+uint8_t                 currentByteToTransmit               = 0;
 
 
 
@@ -62,6 +88,8 @@ void ResetI2CMaster()
 {
     SET_SDA();
     SET_SCL();
+    masterState     = Stopped;
+    state           = Idle;
 }
 
 
@@ -73,7 +101,7 @@ void ResetI2CMaster()
 void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 {
     masterState         = Transmitting;
-    state               = 0;
+    state               = StartCondition;
 
     address                 = _address;
     numberOfBytesToTranfer  = _numberOfBytes;
@@ -89,8 +117,8 @@ void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 void I2CRead( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 {
     numberOfBytesToTranfer  = _numberOfBytes;
-    masterState         = Receiving;
-    state               = 0;
+    masterState             = Receiving;
+    state                   = StartCondition;
     address                 = _address;
 }
 
@@ -101,7 +129,7 @@ void I2CRead( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 void Stop()
 {
     masterState         = Stopping;
-    state               = 0;
+    state               = StartCondition;
 }
 
 
@@ -135,129 +163,129 @@ void WriteEngine()
 {
     switch(state)
     {
-        case 0:
+        case StartCondition:
         {
             CLEAR_SDA();    // Start condition.
             break;
         }
 
-        case 1:
+        case StartConditionEnd:
         {
             CLEAR_SCL();    // Start condition.
             break;
         }
 
-        case 2:
+        case Bit7:
         {
             SetSDAAsPerData( (currentByteToTransmit >> 7) & 0x01 );    // b7
             SET_SCL();
             break;
         }
 
-        case 3:
+        case Bit7End:
         {
             CLEAR_SCL();
             break;
         }
 
-        case 4:
+        case Bit6:
         {
             SetSDAAsPerData( (currentByteToTransmit >> 6) & 0x01 );    // b6
             SET_SCL();
             break;
         }
 
-        case 5:
+        case Bit6End:
         {
             CLEAR_SCL();
             break;
         }
 
-        case 6:
+        case Bit5:
         {
             SetSDAAsPerData( (currentByteToTransmit >> 5) & 0x01 );    // b5
             SET_SCL();
             break;
         }
 
-        case 7:
+        case Bit5End:
         {
             CLEAR_SCL();
             break;
         }
 
-        case 8:
+        case Bit4:
         {
             SetSDAAsPerData( (currentByteToTransmit >> 4) & 0x01 );    // b4
             SET_SCL();
             break;
         }
 
-        case 9:
+        case Bit4End:
         {
             CLEAR_SCL();
             break;
         }
 
-        case 10:
+        case Bit3:
         {
             SetSDAAsPerData( (currentByteToTransmit >> 3) & 0x01 );    // b3
             SET_SCL();
             break;
         }
 
-        case 11:
+        case Bit3End:
         {
             CLEAR_SCL();
             break;
         }
 
-        case 12:
+        case Bit2:
         {
             SetSDAAsPerData( (currentByteToTransmit >> 2) & 0x01 );    // b2
             SET_SCL();
             break;
         }
 
-        case 13:
+        case Bit2End:
         {
             CLEAR_SCL();
             break;
         }
 
-        case 14:
+        case Bit1:
         {
             SetSDAAsPerData( (currentByteToTransmit >> 1) & 0x01 );    // b1
             SET_SCL();
             break;
         }
 
-        case 15:
+        case Bit1End:
         {
             CLEAR_SCL();
             break;
         }
 
-        case 16:
+        case Bit0:
         {
             SetSDAAsPerData( (currentByteToTransmit >> 0) & 0x01 );    // b0
             SET_SCL();
             break;
         }
 
-        case 17:
+        case Bit0End:
         {
             CLEAR_SCL();
             break;
         }
 
-        case 18:
+        case Ack:
         {
             SET_SCL();      // ACK bit should be set by device now.
             break;
         }
 
-        case 19:
+        case AckEnd:
         {
             CLEAR_SCL();
             SET_SDA();
@@ -265,7 +293,7 @@ void WriteEngine()
             break;
         }
 
-        case 20:
+        case StopCondition:
         {
             CLEAR_SDA();
             SET_SCL();                          // stop condition
@@ -273,11 +301,11 @@ void WriteEngine()
             break;
         }
 
-        case 21:
+        case StopConditionEnd:
         {
             SET_SDA();
             SET_SCL();                          // stop condition
-            masterState     = Idle;
+            masterState     = Stopped;
             break;
         }
 
@@ -376,7 +404,7 @@ void ReadEngine()
     else
     {
         //Call( completionEvent );
-        masterState     = Idle;
+        masterState     = Stopped;
     }
 
     state++;
@@ -425,7 +453,7 @@ void StopEngine()
         transferFinished = true;
 
         //Call( completionEvent );
-        masterState     = Idle;
+        masterState     = Stopped;
     }
 
     state++;
@@ -509,7 +537,7 @@ void I2CMasterHandler()
             StopEngine();
             break;
 
-        case Idle:
+        case Stopped:
             break;
 
         default:
