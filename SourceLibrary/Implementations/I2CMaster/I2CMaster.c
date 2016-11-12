@@ -39,6 +39,24 @@ typedef enum
     Bit1End,
     Bit0,
     Bit0End,
+
+    ReadBit7,
+    ReadBit7End,
+    ReadBit6,
+    ReadBit6End,
+    ReadBit5,
+    ReadBit5End,
+    ReadBit4,
+    ReadBit4End,
+    ReadBit3,
+    ReadBit3End,
+    ReadBit2,
+    ReadBit2End,
+    ReadBit1,
+    ReadBit1End,
+    ReadBit0,
+    ReadBit0End,
+
     Ack,
     AckEnd,
     StopCondition,
@@ -78,6 +96,7 @@ I2CMasterState          state                               = 0;
 bool                    transferFinished                    = true;
 uint8_t*                bytes                               = 0;
 uint8_t                 currentByteToTransmit               = 0;
+uint8_t                 currentByteBeingReceived            = 0;
 uint32_t                currentDataByteIndex                = 0;
 
 
@@ -118,10 +137,17 @@ void I2CWrite( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 //
 void I2CRead( I2CAddress _address, uint8_t* _bytes, uint8_t _numberOfBytes )
 {
-    numberOfBytesToTransfer = _numberOfBytes;
     masterState             = Receiving;
     state                   = StartCondition;
+
     address                 = _address;
+    numberOfBytesToTransfer = _numberOfBytes;
+    bytes                   = _bytes;
+
+    currentByteToTransmit   = address | (0x1);
+    currentDataByteIndex    = 0;
+
+    currentByteBeingReceived    = 0;
 }
 
 
@@ -325,6 +351,163 @@ void WriteEngine()
             break;
         }
 
+
+
+        case ReadBit7:
+        {
+            SET_SCL();
+            state   = ReadBit7End;
+            break;
+        }
+
+        case ReadBit7End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    = 0;
+            currentByteBeingReceived    |= ((value&0x01) << 7);
+
+            CLEAR_SCL();
+            state   = ReadBit6;
+            break;
+        }
+
+
+        case ReadBit6:
+        {
+            SET_SCL();
+            state   = ReadBit6End;
+            break;
+        }
+
+        case ReadBit6End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 6);
+
+            CLEAR_SCL();
+            state   = ReadBit5;
+            break;
+        }
+
+
+
+        case ReadBit5:
+        {
+            SET_SCL();
+            state   = ReadBit5End;
+            break;
+        }
+
+        case ReadBit5End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 5);
+
+            CLEAR_SCL();
+            state   = ReadBit4;
+            break;
+        }
+
+
+
+        case ReadBit4:
+        {
+            SET_SCL();
+            state   = ReadBit4End;
+            break;
+        }
+
+        case ReadBit4End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 4);
+
+            CLEAR_SCL();
+            state   = ReadBit3;
+            break;
+        }
+
+
+
+        case ReadBit3:
+        {
+            SET_SCL();
+            state   = ReadBit3End;
+            break;
+        }
+
+        case ReadBit3End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 3);
+
+            CLEAR_SCL();
+            state   = ReadBit3;
+            break;
+        }
+
+
+
+
+        case ReadBit2:
+        {
+            SET_SCL();
+            state   = ReadBit2End;
+            break;
+        }
+
+        case ReadBit2End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 2);
+
+            CLEAR_SCL();
+            state   = ReadBit1;
+            break;
+        }
+
+
+
+
+        case ReadBit1:
+        {
+            SET_SCL();
+            state   = ReadBit1End;
+            break;
+        }
+
+        case ReadBit1End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 1);
+
+            CLEAR_SCL();
+            state   = ReadBit0;
+            break;
+        }
+
+
+
+
+        case ReadBit0:
+        {
+            SET_SCL();
+            state   = ReadBit0End;
+            break;
+        }
+
+        case ReadBit0End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 0);
+
+            CLEAR_SCL();
+            state   = ReadBit0;
+            break;
+        }
+
+
+
         case StopCondition:
         {
             CLEAR_SDA();
@@ -357,90 +540,192 @@ void WriteEngine()
 //
 void ReadEngine()
 {
-    const uint8_t   numberOfStartStates     = 3;
-    const uint8_t   numberOfStopStates      = 3;
-    const uint8_t   numberOfBitsPerByte     = 8+1;                      // data+ACK.
-    const uint8_t   numberOfStatesPerByte   = numberOfBitsPerByte*2;    // lo clock & hi clock.
-
-    if(state == 0)
+    switch(state)
     {
-        //
-        // Start condition.
-        //
-        SET_SDA();
-        SET_SCL();
-    }
-    else if(state == 1)
-    {
-        //
-        // Start condition.
-        //
-        SET_SDA( false );
-    }
-    else if(state == 2)
-    {
-        //
-        // Start condition.
-        //
-        CLEAR_SCL();
-        SET_SDA();
-    }
-    else if( state < (numberOfBytesToTransfer*numberOfStatesPerByte)+numberOfStartStates )
-    {
-        uint8_t         byteIndex   = (state-3)/(2*9);
-        static uint8_t  byte        = 0;
-        uint8_t         bitInByte   = (state - ((byteIndex*numberOfStatesPerByte) + numberOfStartStates)) / 2;
-
-        //
-        // Reset the byte.
-        //
-        if(byteIndex == 0)
+        case StartCondition:
         {
-            byte = 0;
+            CLEAR_SDA();    // Start condition.
+            state   = StartConditionEnd;
+            break;
         }
 
-        //
-        // Set the data/clock lines as appropriate.
-        //
-        if( (state%2) != 0)
+        case StartConditionEnd:
         {
-            CLEAR_SCL();        // bring clock down before setting new data.
+            CLEAR_SCL();    // Start condition.
+            state   = Bit7;
+            break;
         }
-        else
+
+        case Bit7:
         {
+            SetSDAAsPerData( (currentByteToTransmit >> 7) & 0x01 );    // b7
             SET_SCL();
+            state   = Bit7End;
+            break;
+        }
 
-            // TODO: Wait a bit to settle....
+        case Bit7End:
+        {
+            CLEAR_SCL();
+            state   = Bit6;
+            break;
+        }
 
-            if(bitInByte == 8)
+        case Bit6:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 6) & 0x01 );    // b6
+            SET_SCL();
+            state   = Bit6End;
+            break;
+        }
+
+        case Bit6End:
+        {
+            CLEAR_SCL();
+            state   = Bit5;
+            break;
+        }
+
+        case Bit5:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 5) & 0x01 );    // b5
+            SET_SCL();
+            state   = Bit5End;
+            break;
+        }
+
+        case Bit5End:
+        {
+            CLEAR_SCL();
+            state   = Bit4;
+            break;
+        }
+
+        case Bit4:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 4) & 0x01 );    // b4
+            SET_SCL();
+            state   = Bit4End;
+            break;
+        }
+
+        case Bit4End:
+        {
+            CLEAR_SCL();
+            state   = Bit3;
+            break;
+        }
+
+        case Bit3:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 3) & 0x01 );    // b3
+            SET_SCL();
+            state   = Bit3End;
+            break;
+        }
+
+        case Bit3End:
+        {
+            CLEAR_SCL();
+            state   = Bit2;
+            break;
+        }
+
+        case Bit2:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 2) & 0x01 );    // b2
+            SET_SCL();
+            state   = Bit2End;
+            break;
+        }
+
+        case Bit2End:
+        {
+            CLEAR_SCL();
+            state   = Bit1;
+            break;
+        }
+
+        case Bit1:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 1) & 0x01 );    // b1
+            SET_SCL();
+            state   = Bit1End;
+            break;
+        }
+
+        case Bit1End:
+        {
+            CLEAR_SCL();
+            state   = Bit0;
+            break;
+        }
+
+        case Bit0:
+        {
+            SetSDAAsPerData( (currentByteToTransmit >> 0) & 0x01 );    // b0
+            SET_SCL();
+            state   = Bit0End;
+            break;
+        }
+
+        case Bit0End:
+        {
+            CLEAR_SCL();
+            state   = Ack;
+            break;
+        }
+
+        case Ack:
+        {
+            SET_SDA();
+            SET_SCL();      // ACK bit should be set by device now.
+            state   = AckEnd;
+            break;
+        }
+
+        case AckEnd:
+        {
+            CLEAR_SCL();
+            bool ackValue = GET_SDA(); // TODO: Get ACK bit.
+
+            if(currentDataByteIndex < numberOfBytesToTransfer)
             {
-                if(I2CMasterByteReceived( byte ) == true)
-                {
-                    CLEAR_SDA();
-                }
-                else
-                {
-                    SET_SDA();
-                }
+                currentByteToTransmit   = bytes[currentDataByteIndex];
+                currentDataByteIndex++;
+                state   = Bit7;
             }
             else
             {
-                bool bit = GET_SDA();
-                if(bit == true)
-                {
-                    bit     |= (1<<bitInByte);
-                }            
+                state   = StopCondition;
             }
+            break;
+        }
 
+        case StopCondition:
+        {
+            CLEAR_SDA();
+            SET_SCL();                          // stop condition
+            // TODO: Get ACK bit.
+            state   = StopConditionEnd;
+            break;
+        }
+
+        case StopConditionEnd:
+        {
+            SET_SDA();
+            SET_SCL();                          // stop condition
+            masterState     = Stopped;
+            state   = Idle;
+            break;
+        }
+
+        default:
+        {
+            PANIC();
+            break;
         }
     }
-    else
-    {
-        //Call( completionEvent );
-        masterState     = Stopped;
-    }
-
-    state++;
 }
 
 
@@ -499,57 +784,6 @@ void StopEngine()
 
 
 
-
-#if 0
-
-void I2CDisplay()
-{
-
-    if(masterState != Idle)
-    {
-        uint8_t*    sdaText;
-        if(sda == true)
-        {
-            sdaText     = "|   ";
-        }
-        else
-        {
-            sdaText     = "   |";
-        }
-        if(sdaDriven == false)
-        {
-            sdaText     = "XXXX";
-        }
-
-        uint8_t*    sclText;
-        if(scl == true)
-        {
-            sclText     = "|   ";
-        }
-        else
-        {
-            sclText     = "   |";
-        }
-    
-        static bool sdaOld  = false;
-        static bool sclOld  = false;
-        if(sdaOld != sda)
-        {
-            sdaText     = "----";
-        } 
-
-        if(sclOld != scl)
-        {
-            sclText     = "----";
-        } 
-
-        //DPRINTF("%03d) %6s %6s \n",state, sclText, sdaText);
-        sdaOld = sda;
-        sclOld = scl;
-    }    
-}
-
-#endif
 
 //
 //
