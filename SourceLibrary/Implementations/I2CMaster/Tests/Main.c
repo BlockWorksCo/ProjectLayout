@@ -109,13 +109,29 @@ void TestOne()
         DebugPrintf("%c", (sdaData[i]==true ? '-':'_') );
     }
     DebugPrintf("\n");
+#if 0
+    DebugPrintf("scl={");
+    for(uint32_t i=0; i<cycleCount; i++)
+    {
+        DebugPrintf("%c,", (sclData[i]==true ? '1':'0') );
+    }
+    DebugPrintf("}\n");
 
+    DebugPrintf("sda={");
+    for(uint32_t i=0; i<cycleCount; i++)
+    {
+        DebugPrintf("%c,", (sdaData[i]==true ? '1':'0') );
+    }
+    DebugPrintf("}\n");
+#endif
     //
     // Check the received data.
     //                         I S   0   1   2   3   4   5   6   7   A   S I
-    bool    goodSCLData[]   = {1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1};
-    bool    goodSDAData[]   = {1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1};
-    AssertThat( cycleCount == 23,                                           "cycle count is incorrect (%d)", cycleCount );
+    bool    goodSCLData[]   = {1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1
+,0,1,0,1,0,1,0,1,0,1,0,1,1,};
+    bool    goodSDAData[]   = {1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0
+,0,0,0,0,0,1,1,1,1,1,1,0,1,};
+    AssertThat( cycleCount == NUMBER_OF_ELEMENTS(goodSCLData),              "cycle count is incorrect (%d)", cycleCount );
     AssertThat( memcmp(&goodSCLData[0], &sclData[0], cycleCount) == 0,      "SCL data is incorrect (%d)", cycleCount );
     AssertThat( memcmp(&goodSDAData[0], &sdaData[0], cycleCount) == 0,      "SDA data is incorrect (%d)", cycleCount );
 }
