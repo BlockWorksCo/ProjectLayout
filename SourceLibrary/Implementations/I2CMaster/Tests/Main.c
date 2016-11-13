@@ -9,10 +9,10 @@
 #include "DebugText.h"
 
 
-bool        sdaData[128]    = {0};
-bool        sclData[128]    = {0};
-uint32_t    cycleCount      = 0;
-
+bool        sdaData[128]        = {0};
+bool        sclData[128]        = {0};
+bool        slaveSDAData[128]   = {0};
+uint32_t    cycleCount          = 0;
 
 
 bool I2CMasterByteReceived( uint8_t byte )
@@ -50,7 +50,7 @@ void CLEAR_SCL()
 bool GET_SDA()
 {
     // Change to input, allowing pull-up to raise the level or other device to drive it down (open drain).
-    return true;
+    return slaveSDAData[cycleCount];
 }
 
 
@@ -60,7 +60,7 @@ bool GET_SDA()
 //
 void Reset()
 {
-    cycleCount      = 0;
+    cycleCount              = 0;
     ResetI2CMaster();
 
     cycleCount++;
@@ -79,6 +79,9 @@ void TestOne()
     // Setup for an I2C write of 4 bytes to address 0x52.
     //
     uint8_t     data[]  = {0x00,0x01,0x02,0x03};
+    bool        slaveResponse[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1 ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,0,0,0,};
+    memcpy( &slaveSDAData[0], &slaveResponse[0], sizeof(slaveResponse) );
     I2CWrite( 0x52, &data[0], sizeof(data) );
 
     //
@@ -147,9 +150,13 @@ void TestOne()
 void TestTwo()
 {
     //
-    // Setup for an I2C write of 4 bytes to address 0x52.
+    // Setup for an I2C read of 4 bytes to address 0x52.
     //
-    uint8_t     data[]  = {0x00,0x01,0x02,0x03};
+    uint8_t     data[]          = {0x00,0x01,0x02,0x03};
+    bool        slaveResponse[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1 ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,0,0,0,};
+    memcpy( &slaveSDAData[0], &slaveResponse[0], sizeof(slaveResponse) );
+
     I2CRead( 0x52, &data[0], sizeof(data) );
 
     //

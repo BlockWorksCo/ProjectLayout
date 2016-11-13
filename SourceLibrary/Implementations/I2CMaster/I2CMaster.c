@@ -336,9 +336,11 @@ void WriteEngine()
         case AckEnd:
         {
             CLEAR_SCL();
+            extern uint32_t cycleCount;
+            DebugPrintf("<cycleCount@ACK=%d>\n",cycleCount);
             bool ackValue = GET_SDA(); // TODO: Get ACK bit.
 
-            if(currentDataByteIndex < numberOfBytesToTransfer)
+            if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == true) )
             {
                 currentByteToTransmit   = bytes[currentDataByteIndex];
                 currentDataByteIndex++;
@@ -533,7 +535,7 @@ void ReadEngine()
             CLEAR_SCL();
             bool ackValue = GET_SDA(); // TODO: Get ACK bit.
 
-            if(currentDataByteIndex < numberOfBytesToTransfer)
+            if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == true) )
             {
                 currentByteToTransmit   = bytes[currentDataByteIndex];
                 currentDataByteIndex++;
@@ -554,6 +556,7 @@ void ReadEngine()
         case ReadBit7:
         {
             SET_SCL();
+            currentByteBeingReceived    = 0;
             state   = ReadBit7End;
             break;
         }
@@ -561,7 +564,6 @@ void ReadEngine()
         case ReadBit7End:
         {
             bool value = GET_SDA(); 
-            currentByteBeingReceived    = 0;
             currentByteBeingReceived    |= ((value&0x01) << 7);
 
             CLEAR_SCL();
