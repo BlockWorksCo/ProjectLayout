@@ -352,162 +352,6 @@ void WriteEngine()
         }
 
 
-
-        case ReadBit7:
-        {
-            SET_SCL();
-            state   = ReadBit7End;
-            break;
-        }
-
-        case ReadBit7End:
-        {
-            bool value = GET_SDA(); 
-            currentByteBeingReceived    = 0;
-            currentByteBeingReceived    |= ((value&0x01) << 7);
-
-            CLEAR_SCL();
-            state   = ReadBit6;
-            break;
-        }
-
-
-        case ReadBit6:
-        {
-            SET_SCL();
-            state   = ReadBit6End;
-            break;
-        }
-
-        case ReadBit6End:
-        {
-            bool value = GET_SDA(); 
-            currentByteBeingReceived    |= ((value&0x01) << 6);
-
-            CLEAR_SCL();
-            state   = ReadBit5;
-            break;
-        }
-
-
-
-        case ReadBit5:
-        {
-            SET_SCL();
-            state   = ReadBit5End;
-            break;
-        }
-
-        case ReadBit5End:
-        {
-            bool value = GET_SDA(); 
-            currentByteBeingReceived    |= ((value&0x01) << 5);
-
-            CLEAR_SCL();
-            state   = ReadBit4;
-            break;
-        }
-
-
-
-        case ReadBit4:
-        {
-            SET_SCL();
-            state   = ReadBit4End;
-            break;
-        }
-
-        case ReadBit4End:
-        {
-            bool value = GET_SDA(); 
-            currentByteBeingReceived    |= ((value&0x01) << 4);
-
-            CLEAR_SCL();
-            state   = ReadBit3;
-            break;
-        }
-
-
-
-        case ReadBit3:
-        {
-            SET_SCL();
-            state   = ReadBit3End;
-            break;
-        }
-
-        case ReadBit3End:
-        {
-            bool value = GET_SDA(); 
-            currentByteBeingReceived    |= ((value&0x01) << 3);
-
-            CLEAR_SCL();
-            state   = ReadBit3;
-            break;
-        }
-
-
-
-
-        case ReadBit2:
-        {
-            SET_SCL();
-            state   = ReadBit2End;
-            break;
-        }
-
-        case ReadBit2End:
-        {
-            bool value = GET_SDA(); 
-            currentByteBeingReceived    |= ((value&0x01) << 2);
-
-            CLEAR_SCL();
-            state   = ReadBit1;
-            break;
-        }
-
-
-
-
-        case ReadBit1:
-        {
-            SET_SCL();
-            state   = ReadBit1End;
-            break;
-        }
-
-        case ReadBit1End:
-        {
-            bool value = GET_SDA(); 
-            currentByteBeingReceived    |= ((value&0x01) << 1);
-
-            CLEAR_SCL();
-            state   = ReadBit0;
-            break;
-        }
-
-
-
-
-        case ReadBit0:
-        {
-            SET_SCL();
-            state   = ReadBit0End;
-            break;
-        }
-
-        case ReadBit0End:
-        {
-            bool value = GET_SDA(); 
-            currentByteBeingReceived    |= ((value&0x01) << 0);
-
-            CLEAR_SCL();
-            state   = ReadBit0;
-            break;
-        }
-
-
-
         case StopCondition:
         {
             CLEAR_SDA();
@@ -693,7 +537,7 @@ void ReadEngine()
             {
                 currentByteToTransmit   = bytes[currentDataByteIndex];
                 currentDataByteIndex++;
-                state   = Bit7;
+                state   = ReadBit7;
             }
             else
             {
@@ -701,6 +545,167 @@ void ReadEngine()
             }
             break;
         }
+
+
+
+
+
+
+        case ReadBit7:
+        {
+            SET_SCL();
+            state   = ReadBit7End;
+            break;
+        }
+
+        case ReadBit7End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    = 0;
+            currentByteBeingReceived    |= ((value&0x01) << 7);
+
+            CLEAR_SCL();
+            state   = ReadBit6;
+            break;
+        }
+
+
+        case ReadBit6:
+        {
+            SET_SCL();
+            state   = ReadBit6End;
+            break;
+        }
+
+        case ReadBit6End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 6);
+
+            CLEAR_SCL();
+            state   = ReadBit5;
+            break;
+        }
+
+
+
+        case ReadBit5:
+        {
+            SET_SCL();
+            state   = ReadBit5End;
+            break;
+        }
+
+        case ReadBit5End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 5);
+
+            CLEAR_SCL();
+            state   = ReadBit4;
+            break;
+        }
+
+
+
+        case ReadBit4:
+        {
+            SET_SCL();
+            state   = ReadBit4End;
+            break;
+        }
+
+        case ReadBit4End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 4);
+
+            CLEAR_SCL();
+            state   = ReadBit3;
+            break;
+        }
+
+
+
+        case ReadBit3:
+        {
+            SET_SCL();
+            state   = ReadBit3End;
+            break;
+        }
+
+        case ReadBit3End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 3);
+
+            CLEAR_SCL();
+            state   = ReadBit3;
+            break;
+        }
+
+
+
+
+        case ReadBit2:
+        {
+            SET_SCL();
+            state   = ReadBit2End;
+            break;
+        }
+
+        case ReadBit2End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 2);
+
+            CLEAR_SCL();
+            state   = ReadBit1;
+            break;
+        }
+
+
+
+
+        case ReadBit1:
+        {
+            SET_SCL();
+            state   = ReadBit1End;
+            break;
+        }
+
+        case ReadBit1End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 1);
+
+            CLEAR_SCL();
+            state   = ReadBit0;
+            break;
+        }
+
+
+
+
+        case ReadBit0:
+        {
+            SET_SCL();
+            state   = ReadBit0End;
+            break;
+        }
+
+        case ReadBit0End:
+        {
+            bool value = GET_SDA(); 
+            currentByteBeingReceived    |= ((value&0x01) << 0);
+
+            CLEAR_SCL();
+            state   = Ack;
+            break;
+        }
+
+
+
 
         case StopCondition:
         {
