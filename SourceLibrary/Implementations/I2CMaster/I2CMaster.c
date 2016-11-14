@@ -337,7 +337,6 @@ void WriteEngine()
         {
             CLEAR_SCL();
             extern uint32_t cycleCount;
-            DebugPrintf("<cycleCount@ACK=%d>\n",cycleCount);
             bool ackValue = GET_SDA(); // TODO: Get ACK bit.
 
             if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == true) )

@@ -50,6 +50,7 @@ void CLEAR_SCL()
 bool GET_SDA()
 {
     // Change to input, allowing pull-up to raise the level or other device to drive it down (open drain).
+    sdaData[cycleCount]     = slaveSDAData[cycleCount];
     return slaveSDAData[cycleCount];
 }
 
@@ -80,7 +81,7 @@ void TestOne()
     //
     uint8_t     data[]  = {0x00,0x01,0x02,0x03};
     bool        slaveResponse[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1 ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1, 0,0,0,0,0,0,0
-,0,0,0,0,0,0,0,0,0,0,0,0,0,};
+,0,0,0,0,0,0,0,0,0,0,1,0,0,};
     memcpy( &slaveSDAData[0], &slaveResponse[0], sizeof(slaveResponse) );
     I2CWrite( 0x52, &data[0], sizeof(data) );
 
