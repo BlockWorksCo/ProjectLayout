@@ -533,17 +533,29 @@ void ReadEngine()
         case AckEnd:
         {
             CLEAR_SCL();
-            bool ackValue = GET_SDA(); // TODO: Get ACK bit.
-            if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == false) )
+            bool ackValue = GET_SDA();
+            bool clkValue = GET_SCL();
+            if(clkValue == true)
             {
-                currentByteToTransmit   = bytes[currentDataByteIndex];
-                currentDataByteIndex++;
-                state   = ReadBit7;
+                if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == false) )
+                {
+                    currentByteToTransmit   = bytes[currentDataByteIndex];
+                    currentDataByteIndex++;
+                    state   = ReadBit7;
+                }
+                else
+                {
+                    state   = StopCondition;
+                }
             }
             else
             {
-                state   = StopCondition;
+                //
+                // Clock stretching situation, slave is holding it low.
+                //
+                state   = AckEnd;
             }
+
             break;
         }
 

@@ -29,6 +29,7 @@ bool GET_SDA();
 
 void SET_SCL();
 void CLEAR_SCL();
+bool GET_SCL();
 
 
 
