@@ -382,7 +382,7 @@ void WriteEngine()
 }
 
 //
-// Called at regular intervals to transmit an I2C bus protocol.
+// Called at regular intervals to receive an I2C bus protocol message.
 //
 void ReadEngine()
 {
