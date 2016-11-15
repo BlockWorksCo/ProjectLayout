@@ -336,9 +336,9 @@ void WriteEngine()
 
         case AckEnd:
         {
-            CLEAR_SCL();
             extern uint32_t cycleCount;
             bool ackValue = GET_SDA(); // TODO: Get ACK bit.
+            CLEAR_SCL();
 
             if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == false) )
             {
@@ -525,16 +525,17 @@ void ReadEngine()
         case Ack:
         {
             SET_SDA();
-            SET_SCL();      // ACK bit should be set by device now.
+            SET_SCL();
             state   = AckEnd;
             break;
         }
 
         case AckEnd:
         {
-            CLEAR_SCL();
             bool ackValue = GET_SDA();
             bool clkValue = GET_SCL();
+            CLEAR_SCL();
+
             if(clkValue == true)
             {
                 if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == false) )
