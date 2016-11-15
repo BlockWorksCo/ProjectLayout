@@ -27,14 +27,14 @@ void SET_SDA()
 {
     // Change to input, allowing pull-up to raise the level (open drain).
     sdaSetState         = true;
-    sdaData[cycleCount] = true;
+    sdaData[cycleCount] = sdaSetState & slaveSDAData[cycleCount];  // wired-AND
 }
 
 void CLEAR_SDA()
 {
     // Change to output, driving down to ground (open drain).
     sdaSetState         = false;
-    sdaData[cycleCount] = false;
+    sdaData[cycleCount] = sdaSetState & slaveSDAData[cycleCount];  // wired-AND
 }
 
 
@@ -42,14 +42,14 @@ void SET_SCL()
 {
     // Change to input, allowing pull-up to raise the level (open drain).
     sclSetState         = true;
-    sclData[cycleCount] = true;
+    sclData[cycleCount] = sclSetState & slaveSCLData[cycleCount];  // wired-AND
 }
 
 void CLEAR_SCL()
 {
     // Change to output, driving down to ground (open drain).
     sclSetState         = false;
-    sclData[cycleCount] = false;
+    sclData[cycleCount] = sclSetState & slaveSCLData[cycleCount];  // wired-AND
 }
 
 
@@ -76,11 +76,17 @@ bool GET_SCL()
 void Reset()
 {
     cycleCount              = 0;
+
+    memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
+    memset( &slaveSDAData[0], 1,            sizeof(slaveSDAData) );
+    sdaSetState         = true;
+    sclSetState         = true;
+
     ResetI2CMaster();
 
     cycleCount++;
-    sdaData[cycleCount] = sdaData[cycleCount-1];
-    sclData[cycleCount] = sclData[cycleCount-1];
+    SET_SDA();
+    SET_SCL();
 }
 
 
@@ -94,8 +100,8 @@ void TestOne()
     // Setup for an I2C write of 4 bytes to address 0x52.
     //
     uint8_t     data[]  = {0x00,0x01,0x02,0x03};
-    bool        slaveSDA[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0 ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0
-,0,0,0,0,0,0,0,0,0,0,1,0,0,};
+    bool        slaveSDA[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0 ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1
+,1,1,1,1,1,1,1,1,1,1,1,1,1,};
     memcpy( &slaveSDAData[0], &slaveSDA[0], sizeof(slaveSDAData) );
     memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
 
