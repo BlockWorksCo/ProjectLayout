@@ -57,16 +57,15 @@ void CLEAR_SCL()
 bool GET_SDA()
 {
     // Change to input, allowing pull-up to raise the level or other device to drive it down (open drain).
-    sdaData[cycleCount]     = slaveSDAData[cycleCount] & sdaSetState;
+    sdaData[cycleCount]     = slaveSDAData[cycleCount] & sdaSetState;   // wired-AND
     return sdaData[cycleCount];
 }
 
 bool GET_SCL()
 {
     // Change to input, allowing pull-up to raise the level or other device to drive it down (open drain).
-    sclData[cycleCount]     = slaveSCLData[cycleCount] & sclSetState;
-    //return slaveSCLData[cycleCount];
-    return true;
+    sclData[cycleCount]     = slaveSCLData[cycleCount] & sclSetState;   // wired-AND
+    return slaveSCLData[cycleCount];
 }
 
 
@@ -95,9 +94,11 @@ void TestOne()
     // Setup for an I2C write of 4 bytes to address 0x52.
     //
     uint8_t     data[]  = {0x00,0x01,0x02,0x03};
-    bool        slaveResponse[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0 ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0
+    bool        slaveSDA[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0 ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0
 ,0,0,0,0,0,0,0,0,0,0,1,0,0,};
-    memcpy( &slaveSDAData[0], &slaveResponse[0], sizeof(slaveResponse) );
+    memcpy( &slaveSDAData[0], &slaveSDA[0], sizeof(slaveSDAData) );
+    memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
+
     I2CWrite( 0x52, &data[0], sizeof(data) );
 
     //
@@ -176,9 +177,10 @@ void TestTwo()
     // Setup for an I2C read of 4 bytes to address 0x52.
     //
     uint8_t     data[]          = {0x00,0x01,0x02,0x03};
-    bool        slaveResponse[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0, 0 ,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0, 0, 0,0,0,1,1,0,0
+    bool        slaveSDA[]      = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0, 0 ,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0, 0, 0,0,0,1,1,0,0
 ,0,0,0,0,0,0,0,0,0,0,0,0,0,};
-    memcpy( &slaveSDAData[0], &slaveResponse[0], sizeof(slaveResponse) );
+    memcpy( &slaveSDAData[0], &slaveSDA[0], sizeof(slaveSDAData) );
+    memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
 
     I2CRead( 0x52, &data[0], sizeof(data) );
 
@@ -255,9 +257,10 @@ void TestThree()
     // Setup for an I2C read of 4 bytes to address 0x52.
     //
     uint8_t     data[]          = {0x00,0x01,0x02,0x03};
-    bool        slaveResponse[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0, 1 ,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0, 0, 0,0,0,1,1,0,0
+    bool        slaveSDA[]      = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0, 1 ,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0, 0, 0,0,0,1,1,0,0
 ,0,0,0,0,0,0,0,0,0,0,0,0,0,};
-    memcpy( &slaveSDAData[0], &slaveResponse[0], sizeof(slaveResponse) );
+    memcpy( &slaveSDAData[0], &slaveSDA[0], sizeof(slaveSDAData) );
+    memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
 
     I2CRead( 0x52, &data[0], sizeof(data) );
 
@@ -335,9 +338,10 @@ void TestFour()
     // Setup for an I2C read of 4 bytes to address 0x52.
     //
     uint8_t     data[]          = {0x00,0x01,0x02,0x03};
-    bool        slaveResponse[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0, 0, 0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0, 1 ,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0, 0, 0,0,0,1,1,0,0
-,0,0,0,0,0,0,0,0,0,0,0,0,0,};
-    memcpy( &slaveSDAData[0], &slaveResponse[0], sizeof(slaveResponse) );
+    bool        slaveSDA[]      = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0 ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1
+,1,1,1,1,1,1,1,1,1,1,1,1,1,};
+    memcpy( &slaveSDAData[0], &slaveSDA[0], sizeof(slaveSDAData) );
+    memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
 
     I2CRead( 0x52, &data[0], sizeof(data) );
 
