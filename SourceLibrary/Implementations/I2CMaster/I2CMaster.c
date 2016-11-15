@@ -340,7 +340,7 @@ void WriteEngine()
             extern uint32_t cycleCount;
             bool ackValue = GET_SDA(); // TODO: Get ACK bit.
 
-            if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == true) )
+            if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == false) )
             {
                 currentByteToTransmit   = bytes[currentDataByteIndex];
                 currentDataByteIndex++;
@@ -386,7 +386,6 @@ void WriteEngine()
 //
 void ReadEngine()
 {
-    DebugPrintf("%d) %d\n", cycleCount, state);
     switch(state)
     {
         case StartCondition:
@@ -535,17 +534,14 @@ void ReadEngine()
         {
             CLEAR_SCL();
             bool ackValue = GET_SDA(); // TODO: Get ACK bit.
-            DebugPrintf("ackValue=%d (%d)\n",ackValue, cycleCount);
-            if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == true) )
+            if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == false) )
             {
-                DebugPrintf("ACK at %d\n", cycleCount);
                 currentByteToTransmit   = bytes[currentDataByteIndex];
                 currentDataByteIndex++;
                 state   = ReadBit7;
             }
             else
             {
-                DebugPrintf("NACK at %d\n", cycleCount);
                 state   = StopCondition;
             }
             break;
@@ -706,7 +702,7 @@ void ReadEngine()
 
             CLEAR_SCL();
             state   = Ack;
-            DebugPrintf("readbyte complete... going back to Ack state (%d)\n",cycleCount);
+            //DebugPrintf("readbyte complete... going back to Ack state (%d)\n",cycleCount);
             break;
         }
 
