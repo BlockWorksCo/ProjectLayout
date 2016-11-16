@@ -533,10 +533,6 @@ void ReadEngine()
         case AckEnd:
         {
             bool ackValue = GET_SDA();
-            bool clkValue = GET_SCL();
-
-            if(clkValue == true)
-            {
                 DebugPrintf("<ACK=%d @%d>\n", ackValue, cycleCount);
 
                 CLEAR_SCL();
@@ -549,15 +545,6 @@ void ReadEngine()
                 {
                     state   = StopCondition;
                 }
-            }
-            else
-            {
-                DebugPrintf("<stretch @%d>\n", cycleCount);
-                //
-                // Clock stretching situation, slave is holding it low.
-                //
-                state   = AckEnd;
-            }
 
             break;
         }
@@ -569,9 +556,22 @@ void ReadEngine()
 
         case ReadBit7:
         {
+            bool clkValue = GET_SCL();
             SET_SCL();
-            currentByteBeingReceived    = 0;
-            state   = ReadBit7End;
+
+            if(clkValue == true)
+            {
+                currentByteBeingReceived    = 0;
+                state   = ReadBit7End;
+            }
+            else
+            {
+                DebugPrintf("<stretch @%d>\n", cycleCount);
+                //
+                // Clock stretching situation, slave is holding it low.
+                //
+                state   = ReadBit7;
+            }
             break;
         }
 
