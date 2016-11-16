@@ -35,6 +35,7 @@ bool GET_SCL();
 //
 //
 void I2C_BYTE_RECEIVED(uint8_t byte);
+void I2C_OPERATION_COMPLETE();
 
 
 

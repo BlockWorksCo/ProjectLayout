@@ -364,6 +364,7 @@ void WriteEngine()
             else
             {
                 state   = StopCondition;
+                I2C_OPERATION_COMPLETE();
             }
             break;
         }
@@ -559,6 +560,7 @@ void ReadEngine()
                 else
                 {
                     state   = StopCondition;
+                    I2C_OPERATION_COMPLETE();                    
                 }
 
             break;

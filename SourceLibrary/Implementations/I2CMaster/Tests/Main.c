@@ -75,6 +75,13 @@ void I2C_BYTE_RECEIVED(uint8_t byte)
 }
 
 
+void I2C_OPERATION_COMPLETE()
+{
+    DebugPrintf("<Operation complete>\n");
+}
+
+
+
 //
 // Reset the test.
 //
@@ -425,6 +432,77 @@ void TestFour()
 //
 void TestFive()
 {
+    //
+    // Setup for an I2C write of 4 bytes to address 0x52.
+    //
+    uint8_t     data[]  = {0x00,0x01};
+    bool        slaveSDA[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0 ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1
+,1,1,1,1,1,1,1,1,1,1,1,1,1,};
+    memcpy( &slaveSDAData[0], &slaveSDA[0], sizeof(slaveSDAData) );
+    memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
+
+    I2CWrite( 0x52, &data[0], sizeof(data) );
+
+    //
+    // Pump the data thru the receiver (8N1 format).
+    //
+    for(uint32_t i=0; i<2*(1+9*5+1); i++)
+    {
+        I2CMasterHandler();
+
+        cycleCount++;
+        sdaData[cycleCount] = sdaData[cycleCount-1];
+        sclData[cycleCount] = sclData[cycleCount-1];
+    }
+
+    //
+    // Show the data.
+    //
+    DebugPrintf("     ");
+    for(uint32_t i=0; i<cycleCount/2; i++)
+    {
+        DebugPrintf("%d ", i%9 );
+    }
+    DebugPrintf("\n");
+
+    DebugPrintf("SCL: ");
+    for(uint32_t i=0; i<cycleCount; i++)
+    {
+        DebugPrintf("%c", (sclData[i]==true ? '-':'_') );
+    }
+    DebugPrintf("\n");
+
+    DebugPrintf("SDA: ");
+    for(uint32_t i=0; i<cycleCount; i++)
+    {
+        DebugPrintf("%c", (sdaData[i]==true ? '-':'_') );
+    }
+    DebugPrintf("\n");
+#if 0
+    DebugPrintf("scl={");
+    for(uint32_t i=0; i<cycleCount; i++)
+    {
+        DebugPrintf("%c,", (sclData[i]==true ? '1':'0') );
+    }
+    DebugPrintf("}\n");
+
+    DebugPrintf("sda={");
+    for(uint32_t i=0; i<cycleCount; i++)
+    {
+        DebugPrintf("%c,", (sdaData[i]==true ? '1':'0') );
+    }
+    DebugPrintf("}\n");
+#endif
+    //
+    // Check the received data.
+    //                         I S   0   1   2   3   4   5   6   7   A   S I
+    bool    goodSCLData[]   = {1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1
+,0,1,0,1,0,1,0,1,0,1,0,1,1,};
+    bool    goodSDAData[]   = {1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0
+,0,0,0,0,0,1,1,1,1,1,1,0,1,};
+    AssertThat( cycleCount == NUMBER_OF_ELEMENTS(goodSCLData),              "cycle count is incorrect (%d)", cycleCount );
+    AssertThat( memcmp(&goodSCLData[0], &sclData[0], cycleCount) == 0,      "SCL data is incorrect (%d)", cycleCount );
+    AssertThat( memcmp(&goodSDAData[0], &sdaData[0], cycleCount) == 0,      "SDA data is incorrect (%d)", cycleCount );
 }
 
 
