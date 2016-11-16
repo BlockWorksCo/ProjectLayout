@@ -31,6 +31,11 @@ void SET_SCL();
 void CLEAR_SCL();
 bool GET_SCL();
 
+//
+//
+//
+void I2C_BYTE_RECEIVED(uint8_t byte);
+
 
 
 //

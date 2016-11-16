@@ -534,13 +534,14 @@ void ReadEngine()
         {
             bool ackValue = GET_SDA();
             bool clkValue = GET_SCL();
-            CLEAR_SCL();
 
             if(clkValue == true)
             {
+                DebugPrintf("<ACK=%d @%d>\n", ackValue, cycleCount);
+
+                CLEAR_SCL();
                 if( (currentDataByteIndex < numberOfBytesToTransfer) && (ackValue == false) )
                 {
-                    currentByteToTransmit   = bytes[currentDataByteIndex];
                     currentDataByteIndex++;
                     state   = ReadBit7;
                 }
@@ -551,6 +552,7 @@ void ReadEngine()
             }
             else
             {
+                DebugPrintf("<stretch @%d>\n", cycleCount);
                 //
                 // Clock stretching situation, slave is holding it low.
                 //
@@ -716,6 +718,8 @@ void ReadEngine()
             CLEAR_SCL();
             state   = Ack;
             //DebugPrintf("readbyte complete... going back to Ack state (%d)\n",cycleCount);
+            I2C_BYTE_RECEIVED( currentByteBeingReceived );
+
             break;
         }
 
