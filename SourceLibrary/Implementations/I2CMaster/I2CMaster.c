@@ -210,7 +210,22 @@ void WriteEngine()
         {
             SetSDAAsPerData( (currentByteToTransmit >> 7) & 0x01 );    // b7
             SET_SCL();
-            state   = Bit7End;
+            bool clkValue = GET_SCL();
+
+            if(clkValue == true)
+            {
+                currentByteBeingReceived    = 0;
+                state   = Bit7End;
+            }
+            else
+            {
+                DebugPrintf("<stretch @%d>\n", cycleCount);
+                //
+                // Clock stretching situation, slave is holding it low.
+                //
+                state   = Bit7;
+            }
+            
             break;
         }
 
