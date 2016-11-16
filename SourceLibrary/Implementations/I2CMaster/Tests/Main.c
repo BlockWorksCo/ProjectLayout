@@ -16,7 +16,7 @@ bool        slaveSCLData[128]   = {0};
 bool        sclSetState         = true;
 bool        sdaSetState         = true;
 uint32_t    cycleCount          = 0;
-
+bool        restartRead         = false;
 
 bool I2CMasterByteReceived( uint8_t byte )
 {
@@ -78,6 +78,12 @@ void I2C_BYTE_RECEIVED(uint8_t byte)
 void I2C_OPERATION_COMPLETE()
 {
     DebugPrintf("<Operation complete>\n");
+
+    if(restartRead == true)
+    {
+        static uint8_t     data[]          = {0x00};
+        I2CRead( 0x52, &data[0], sizeof(data) );
+    }
 }
 
 
@@ -88,6 +94,7 @@ void I2C_OPERATION_COMPLETE()
 void Reset()
 {
     cycleCount              = 0;
+    restartRead             = false;
 
     memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
     memset( &slaveSDAData[0], 1,            sizeof(slaveSDAData) );
@@ -436,12 +443,13 @@ void TestFive()
     // Setup for an I2C write of 4 bytes to address 0x52.
     //
     uint8_t     data[]  = {0x00,0x01};
-    bool        slaveSDA[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0 ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 0, 1,1,1,1,1,1,1
+    bool        slaveSDA[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0, 0, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0, 0 ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0, 0, 1,1,1,1,1,1,1
 ,1,1,1,1,1,1,1,1,1,1,1,1,1,};
     memcpy( &slaveSDAData[0], &slaveSDA[0], sizeof(slaveSDAData) );
     memset( &slaveSCLData[0], 1,            sizeof(slaveSCLData) );
 
     I2CWrite( 0x52, &data[0], sizeof(data) );
+    restartRead     = true;
 
     //
     // Pump the data thru the receiver (8N1 format).
