@@ -431,6 +431,21 @@ void TestSix()
 }
 
 //
+// 2 bytes read from nonexistant slave.
+//
+void TestSeven()
+{
+}
+
+//
+// 2 bytes read from slave then 2 bytes transmitted to slave with repeated start.
+//
+void TestEight()
+{
+}
+
+
+//
 // Entry point.
 //
 int main()
@@ -461,6 +476,14 @@ int main()
     Reset();
     DebugPrintf("TestSix:\n");
     TestSix();
+
+    Reset();
+    DebugPrintf("TestSeven:\n");
+    TestSeven();
+
+    Reset();
+    DebugPrintf("TestEight:\n");
+    TestEight();
 
     DebugPrintf("\nComplete.\n");
 }
