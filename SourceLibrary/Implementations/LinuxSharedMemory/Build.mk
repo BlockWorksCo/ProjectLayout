@@ -8,7 +8,8 @@ VPATH		+=	$(SOURCE_LIBRARY)/Implementations/LinuxSharedMemory
 #
 # Include directories.
 #
-INCLUDES	+=	-I$(SOURCE_LIBRARY)/Interfaces/SharedMemory
+INCLUDES	+=	-I$(SOURCE_LIBRARY)/Interfaces/SharedMemory \
+                -I$(SOURCE_LIBRARY)/Interfaces/ErrorHandling
 
 
 #
