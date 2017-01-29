@@ -20,8 +20,10 @@
 
 
 
-
-void* SharedMemoryMasterInitialise(uint32_t identifier)
+//
+//
+//
+volatile void* SharedMemoryMasterInitialise(uint32_t identifier)
 {
     const char*     name = "shm-example";
     const int       SIZE = 4096;
@@ -47,8 +49,10 @@ void* SharedMemoryMasterInitialise(uint32_t identifier)
 
 
 
-
-void* SharedMemorySlaveInitialise(uint32_t identifier)
+//
+//
+//
+volatile void* SharedMemorySlaveInitialise(uint32_t identifier)
 {
     const char* name = "shm-example";
     const int   SIZE = 4096;		
