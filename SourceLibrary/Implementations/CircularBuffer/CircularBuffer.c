@@ -23,19 +23,33 @@ void CircularBufferShow( CircularBuffer* circularBuffer )
     DebugPrintf("last = %d\n", circularBuffer->last);
     DebugPrintf("elementSize = %d\n", circularBuffer->elementSize);
     DebugPrintf("numberOfElements = %d\n", circularBuffer->numberOfElements);
-    DebugPrintf("elements = %p\n", circularBuffer->elements);
+    DebugPrintf("readerElements = %p\n", circularBuffer->readerElements);
+    DebugPrintf("writerElements = %p\n", circularBuffer->writerElements);
 }
 
 
 //
 //
 //
-void CircularBufferInitialise( CircularBuffer* circularBuffer, uint32_t _elementSize, void* _elements, uint32_t _numberOfElements )
+void CircularBufferInitialiseAsReader( CircularBuffer* circularBuffer, uint32_t _elementSize, void* _elements, uint32_t _numberOfElements )
 {
     circularBuffer->first               = 0;
     circularBuffer->last                = 0;
     circularBuffer->elementSize         = _elementSize;
-    circularBuffer->elements            = _elements;
+    circularBuffer->readerElements      = _elements;
+    circularBuffer->numberOfElements    = _numberOfElements;
+}
+
+
+//
+//
+//
+void CircularBufferInitialiseAsWriter( CircularBuffer* circularBuffer, uint32_t _elementSize, void* _elements, uint32_t _numberOfElements )
+{
+    circularBuffer->first               = 0;
+    circularBuffer->last                = 0;
+    circularBuffer->elementSize         = _elementSize;
+    circularBuffer->writerElements      = _elements;
     circularBuffer->numberOfElements    = _numberOfElements;
 }
 
@@ -54,14 +68,12 @@ void CircularBufferPut( CircularBuffer* circularBuffer, void* element )
     {
     }
 
-    CircularBufferShow( circularBuffer );
-
     //
     // Copy data into the buffer.
     //
-    uint32_t    offset      = circularBuffer->elementSize * newLast;
-    uint8_t*    elements    = (uint8_t*)circularBuffer->elements;
-    //memcpy( (void*)&elements[offset], element , circularBuffer->elementSize );
+    uint32_t    offset      = circularBuffer->elementSize * circularBuffer->last;
+    uint8_t*    elements    = (uint8_t*)circularBuffer->writerElements;
+    memcpy( (void*)&elements[offset] , element , circularBuffer->elementSize );
 
     //
     // Move the indices around.
@@ -86,7 +98,7 @@ void CircularBufferGet( CircularBuffer* circularBuffer, void* element )
     // Copy data out of the buffer.
     //
     uint32_t    offset      = circularBuffer->elementSize * circularBuffer->first;
-    uint8_t*    elements    = (uint8_t*)circularBuffer->elements;
+    uint8_t*    elements    = (uint8_t*)circularBuffer->readerElements;
     memcpy( element,  (void*)&elements[offset] , circularBuffer->elementSize );
 
     //

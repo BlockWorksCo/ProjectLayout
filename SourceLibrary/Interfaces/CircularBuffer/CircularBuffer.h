@@ -21,13 +21,18 @@ typedef struct
     volatile uint32_t    first;
     volatile uint32_t    last;
     volatile uint32_t    elementSize;
-    volatile void*       elements;
+    volatile void*       readerElements;
+    volatile void*       writerElements;
     volatile uint32_t    numberOfElements;
+    volatile uint32_t    numberOfReaders;
+    volatile uint32_t    numberOfWriters;
 
 } CircularBuffer;
 
 
-void CircularBufferInitialise( CircularBuffer* circularBuffer, uint32_t _elementSize, void* _elements, uint32_t _numberOfElements );
+void CircularBufferInitialiseAsReader( CircularBuffer* circularBuffer, uint32_t _elementSize, void* _elements, uint32_t _numberOfElements );
+void CircularBufferInitialiseAsWriter( CircularBuffer* circularBuffer, uint32_t _elementSize, void* _elements, uint32_t _numberOfElements );
+
 void CircularBufferPut( CircularBuffer* circularBuffer, void* element );
 void CircularBufferGet( CircularBuffer* circularBuffer, void* element );
 void CircularBufferShow( CircularBuffer* circularBuffer );

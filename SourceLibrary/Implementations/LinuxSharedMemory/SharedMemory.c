@@ -18,6 +18,7 @@
 #include <sys/mman.h>
 
 
+const int       SIZE = 1024*1024;
 
 
 //
@@ -26,7 +27,6 @@
 volatile void* SharedMemoryMasterInitialise(uint32_t identifier)
 {
     const char*     name = "shm-example";
-    const int       SIZE = 4096;
     int             shm_fd;	
     void*           sharedMemoryBase    = NULL;
 
@@ -44,6 +44,13 @@ volatile void* SharedMemoryMasterInitialise(uint32_t identifier)
         PANIC("mmap failed.");
     }
 
+    //DebugPrintf("mapped range = %p to %p\n", sharedMemoryBase, sharedMemoryBase+SIZE);
+
+    //
+    //
+    //
+    memset( sharedMemoryBase, 0xff, SIZE );
+
     return sharedMemoryBase;
 }
 
@@ -55,7 +62,6 @@ volatile void* SharedMemoryMasterInitialise(uint32_t identifier)
 volatile void* SharedMemorySlaveInitialise(uint32_t identifier)
 {
     const char* name = "shm-example";
-    const int   SIZE = 4096;		
     int         shm_fd;
     void*       sharedMemoryBase    = NULL;
 
@@ -70,6 +76,8 @@ volatile void* SharedMemorySlaveInitialise(uint32_t identifier)
     {
         PANIC();
     }
+
+    //DebugPrintf("mapped range = %p to %p\n", sharedMemoryBase, sharedMemoryBase+SIZE);
 
     return sharedMemoryBase;
 }
