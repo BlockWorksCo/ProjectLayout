@@ -13,6 +13,7 @@
 volatile void* SharedMemoryMasterInitialise(uint32_t identifier);
 volatile void* SharedMemorySlaveInitialise(uint32_t identifier);
 
+void SharedMemoryFlush( volatile void* address );
 
 #endif
 

@@ -38,6 +38,8 @@ void CircularBufferInitialiseAsReader( CircularBuffer* circularBuffer, uint32_t 
     circularBuffer->elementSize         = _elementSize;
     circularBuffer->readerElements      = _elements;
     circularBuffer->numberOfElements    = _numberOfElements;
+
+    memset( (void*)circularBuffer->readerElements, 0xff, circularBuffer->elementSize*circularBuffer->numberOfElements );
 }
 
 
@@ -51,6 +53,8 @@ void CircularBufferInitialiseAsWriter( CircularBuffer* circularBuffer, uint32_t 
     circularBuffer->elementSize         = _elementSize;
     circularBuffer->writerElements      = _elements;
     circularBuffer->numberOfElements    = _numberOfElements;
+
+    memset( (void*)circularBuffer->writerElements, 0xff, circularBuffer->elementSize*circularBuffer->numberOfElements );
 }
 
 
@@ -93,6 +97,8 @@ void CircularBufferGet( CircularBuffer* circularBuffer, void* element )
     while(circularBuffer->first == circularBuffer->last)
     {
     }
+
+    //CircularBufferShow( circularBuffer );
 
     //
     // Copy data out of the buffer.

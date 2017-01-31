@@ -83,3 +83,8 @@ volatile void* SharedMemorySlaveInitialise(uint32_t identifier)
 }
 
 
+
+void SharedMemoryFlush( volatile void* address )
+{
+    msync( (void*)address, SIZE, MS_SYNC|MS_INVALIDATE );
+}
