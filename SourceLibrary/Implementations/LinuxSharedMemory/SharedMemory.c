@@ -47,9 +47,10 @@ volatile void* SharedMemoryMasterInitialise(uint32_t identifier)
     //DebugPrintf("mapped range = %p to %p\n", sharedMemoryBase, sharedMemoryBase+SIZE);
 
     //
+    // Clear the memory. TODO: There is a race condition here between the mmap and the memset it is 
+    // possible to have issues.
     //
-    //
-    memset( sharedMemoryBase, 0xff, SIZE );
+    memset( sharedMemoryBase, 0x00, SIZE );
 
     return sharedMemoryBase;
 }

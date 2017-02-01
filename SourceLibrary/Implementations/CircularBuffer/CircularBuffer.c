@@ -40,6 +40,8 @@ void CircularBufferInitialiseAsReader( CircularBuffer* circularBuffer, uint32_t 
     circularBuffer->numberOfElements    = _numberOfElements;
 
     memset( (void*)circularBuffer->readerElements, 0xff, circularBuffer->elementSize*circularBuffer->numberOfElements );
+
+    circularBuffer->numberOfReaders++;
 }
 
 
@@ -55,6 +57,8 @@ void CircularBufferInitialiseAsWriter( CircularBuffer* circularBuffer, uint32_t 
     circularBuffer->numberOfElements    = _numberOfElements;
 
     memset( (void*)circularBuffer->writerElements, 0xff, circularBuffer->elementSize*circularBuffer->numberOfElements );
+
+    circularBuffer->numberOfWriters++;
 }
 
 
