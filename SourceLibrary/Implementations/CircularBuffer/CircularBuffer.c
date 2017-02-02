@@ -13,6 +13,9 @@
 #include "DebugText.h"
 
 
+#define ISB	__asm__ volatile ("mcr     p15, 0, %0, c7, c5, 4" : : "r" (0))
+#define DSB	__asm__ volatile ("mcr     p15, 0, %0, c7, c10, 4" : : "r" (0))
+#define DMB	__asm__ volatile ("mcr     p15, 0, %0, c7, c10, 5" : : "r" (0))
 
 //
 //
@@ -71,14 +74,18 @@ void CircularBufferInitialiseAsWriter( CircularBuffer* circularBuffer, uint32_t 
 //
 void CircularBufferPut( CircularBuffer* circularBuffer, void* element )
 {
-    uint32_t    newLast     = (circularBuffer->last + 1) % circularBuffer->numberOfElements;
+    volatile uint32_t    newLast     = (circularBuffer->last + 1) % circularBuffer->numberOfElements;
 
     //
     // Busy wait so we don't overwrite data.
     //
+    DSB;
+    DMB;
     while(circularBuffer->first == newLast)
     {
     }
+    DSB;
+    DMB;
 
     //
     // Copy data into the buffer.
@@ -91,6 +98,8 @@ void CircularBufferPut( CircularBuffer* circularBuffer, void* element )
     // Move the indices around.
     //
     circularBuffer->last   = newLast;
+    DSB;
+    DMB;
 }
 
 
@@ -99,12 +108,18 @@ void CircularBufferPut( CircularBuffer* circularBuffer, void* element )
 //
 void CircularBufferGet( CircularBuffer* circularBuffer, void* element )
 {
+    volatile uint32_t    newFirst    = (circularBuffer->first+1) % circularBuffer->numberOfElements;
+
     //
     // Busy wait while no data in buffer.
     //
+    DMB;
+    DSB;
     while(circularBuffer->first == circularBuffer->last)
     {
     }
+    DMB;
+    DSB;
 
     //CircularBufferShow( circularBuffer );
 
@@ -118,7 +133,9 @@ void CircularBufferGet( CircularBuffer* circularBuffer, void* element )
     //
     // Move the indices around.
     //
-    circularBuffer->first   = (circularBuffer->first+1) % circularBuffer->numberOfElements;
+    circularBuffer->first   = newFirst;
+    DMB;
+    DSB;
 }
 
 
