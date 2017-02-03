@@ -106,6 +106,41 @@ void CircularBufferPut( CircularBuffer* circularBuffer, void* element )
 //
 //
 //
+void CircularBufferLossyPut( CircularBuffer* circularBuffer, void* element )
+{
+    volatile uint32_t    newLast     = (circularBuffer->last + 1) % circularBuffer->numberOfElements;
+
+    //
+    // Don't Busy wait, just drop the data if the buffer is full.
+    //
+    DSB;
+    DMB;
+    if(circularBuffer->first == newLast)
+    {
+        return;
+    }
+    DSB;
+    DMB;
+
+    //
+    // Copy data into the buffer.
+    //
+    uint32_t    offset      = circularBuffer->elementSize * circularBuffer->last;
+    uint8_t*    elements    = (uint8_t*)circularBuffer->writerElements;
+    memcpy( (void*)&elements[offset] , element , circularBuffer->elementSize );
+
+    //
+    // Move the indices around.
+    //
+    circularBuffer->last   = newLast;
+    DSB;
+    DMB;
+}
+
+
+//
+//
+//
 void CircularBufferGet( CircularBuffer* circularBuffer, void* element )
 {
     volatile uint32_t    newFirst    = (circularBuffer->first+1) % circularBuffer->numberOfElements;
