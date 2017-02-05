@@ -97,6 +97,8 @@ void CircularBufferPut( CircularBuffer* circularBuffer, void* element )
     //
     // Move the indices around.
     //
+    DSB;
+    DMB;
     circularBuffer->last   = newLast;
     DSB;
     DMB;
@@ -132,6 +134,8 @@ void CircularBufferLossyPut( CircularBuffer* circularBuffer, void* element )
     //
     // Move the indices around.
     //
+    DSB;
+    DMB;
     circularBuffer->last   = newLast;
     DSB;
     DMB;
@@ -168,6 +172,8 @@ void CircularBufferGet( CircularBuffer* circularBuffer, void* element )
     //
     // Move the indices around.
     //
+    DSB;
+    DMB;
     circularBuffer->first   = newFirst;
     DMB;
     DSB;

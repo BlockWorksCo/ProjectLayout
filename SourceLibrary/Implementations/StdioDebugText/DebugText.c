@@ -11,8 +11,8 @@
 
 void DebugTextOutput(const char* text)
 {
-    fprintf(stderr, "%s",text);
-    fflush(stderr);
+    fprintf(stdout, "%s",text);
+    fflush(stdout);
 }
 
 
