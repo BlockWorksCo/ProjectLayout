@@ -29,8 +29,6 @@
 #define TRACE                   DebugPrintf("<%s:%d>\n",__FILE__,__LINE__)
 #define DBG                     DebugPrintf("%s:%d\n",__FILE__,__LINE__)
 
-void PANIC();
-
 uint32_t CurrentTimestamp_ms();
 
 
