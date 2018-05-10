@@ -9,6 +9,7 @@
 #include "EventQueue.h"
 #include "KeyValueStore.h"
 #include "FileStorage.h"
+#include "ErrorHandling.h"
 
 KeyValueData keyValueData;
 

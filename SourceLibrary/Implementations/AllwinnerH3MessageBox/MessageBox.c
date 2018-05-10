@@ -8,8 +8,6 @@
 
 
 #include "MessageBox.h"
-#include "io.h"
-#include <io.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
