@@ -63,9 +63,9 @@ void main()
     TestStruct  readBackA   = {0};
     PersistentCircularBufferPeek( &pcbAContext, (uint8_t*)&readBackA );
 
-    //AssertThat( readBackA.fieldA == false );
-    //AssertThat( readBackA.fieldB == 456 );
-    //AssertThat( readBackA.fieldB == 654 );
+    AssertThat( readBackA.fieldA == false, "readback of fieldA failed." );
+    AssertThat( readBackA.fieldB == 456, "readback of fieldB failed." );
+    AssertThat( readBackA.fieldB == 654, "readback of fieldC failed." );
 
     PersistentCircularBufferShowState( &pcbAContext );
 }
