@@ -53,7 +53,7 @@ CFLAGS  += -ffunction-sections -fdata-sections -fno-strict-aliasing
 CFLAGS  += -fno-builtin --short-enums
 
 LDFLAGS += -L../
-LDFLAGS += -mthumb -mabi=aapcs -T../stm32f10x.ld
+LDFLAGS += -mthumb -mabi=aapcs -T$(SOURCE_LIBRARY)/Implementations/BluePillBoardSupport/stm32f10x.ld
 LDFLAGS += -mcpu=cortex-m3
 LDFLAGS += -Wl,--gc-sections
 LDFLAGS += --specs=nano.specs -lc -lnosys
