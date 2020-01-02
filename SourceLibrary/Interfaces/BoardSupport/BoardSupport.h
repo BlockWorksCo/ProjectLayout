@@ -22,6 +22,7 @@ void BoardSupportInitialise();
 void EnableInterrupts();
 void TriggerMailboxInterrupt(uint32_t toID);
 void FlushCache();
+uint32_t GetTickCount();
 
 #endif
 

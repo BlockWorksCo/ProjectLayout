@@ -2,17 +2,33 @@
 // Copyright (C) BlockWorks Consulting Ltd - All Rights Reserved.
 // Unauthorized copying of this file, via any medium is strictly prohibited.
 // Proprietary and confidential.
-// Written by Steve Tickle <Steve@BlockWorks.co>, September 2014.
+// Written by Steve Tickle <Steve@BlockWorks.co>, January 2020.
 //
 
 
 #include "BoardSupport.h"
 #include "ErrorHandling.h"
+#include "stm32f10x.h"
 
 
 
 
 
+uint32_t    sysTickCount    = 0;
+
+void SysTick_Handler()
+{
+    sysTickCount++;
+}
+
+
+//
+//
+//
+uint32_t GetTickCount()
+{
+    return sysTickCount;
+}
 
 
 //
@@ -107,6 +123,9 @@ void __attribute__ ( (naked, aligned(128) ) ) VectorTable()
 void BoardSupportInitialise()
 {
     SetVectorTableAddress( (uint32_t)&VectorTable );
+
+    //SysTick_Config(SystemCoreClock/100);
+    SysTick_Config(50000);
 }
 
 
