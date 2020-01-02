@@ -17,12 +17,16 @@
 
 
 
+
 uint32_t CoreNumber();
 void BoardSupportInitialise();
 void EnableInterrupts();
 void TriggerMailboxInterrupt(uint32_t toID);
 void FlushCache();
 uint32_t GetTickCount();
+uint32_t CurrentTimestamp_ms();
+void Delay_ms(uint32_t ms);
+void Delay_us(uint32_t us);
 
 #endif
 

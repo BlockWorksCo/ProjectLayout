@@ -9,6 +9,7 @@
 
 #include "ErrorHandling.h"
 #include "TimedEvents.h"
+#include "BoardSupport.h"
 
 
 struct

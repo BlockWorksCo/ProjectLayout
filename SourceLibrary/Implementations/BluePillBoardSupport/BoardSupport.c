@@ -30,6 +30,36 @@ uint32_t GetTickCount()
     return sysTickCount;
 }
 
+//
+//
+//
+uint32_t CurrentTimestamp_ms()
+{
+    return sysTickCount;
+}
+
+
+
+
+//
+//
+//
+void Delay_ms(uint32_t ms)
+{
+    uint32_t    start   = CurrentTimestamp_ms();
+    while(CurrentTimestamp_ms() < (start+ms) );
+}
+
+
+//
+//
+//
+void Delay_us(uint32_t us)
+{
+    // minimum delay of 1ms.
+    Delay_ms(1);
+}
+
 
 //
 //
