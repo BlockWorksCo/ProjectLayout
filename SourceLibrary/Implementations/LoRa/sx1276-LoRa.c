@@ -1,11 +1,3 @@
-/******************** (C) COPYRIGHT tongxinmao.com ***************************
-* 文件名		: sx1276-LoRa.C
-* 作者   		: tcm123@126.com
-* 创建日期  	: 2016.3.8
-* 描述			: SX1276/78驱动文件
-* 版本			: V1.0
-* 历史记录  	: 暂无
-********************************************************************************/
 
 #include "Radio.h"
 #include "sx1276-LoRa.h"
@@ -57,59 +49,26 @@ const uint8_t RFM96LoRaBwTbl[10] =
 
 
 
-/**********************************************************
-**Name:     loraStandbyMode
-**Function: Entry standby mode
-**Input:    None
-**Output:   None
-**********************************************************/
 void loraStandbyMode( SPISlaveID id )
 {
     sx1276RegisterWrite( id, LR_RegOpMode+0x01+0x08);                              //Standby
 }
 
-/**********************************************************
-**Name:     loraSleepMode
-**Function: Entry sleep mode
-**Input:    None
-**Output:   None
-**********************************************************/
 void loraSleepMode( SPISlaveID id )
 {
     sx1276RegisterWrite( id, LR_RegOpMode+0x00+0x08);                              //Sleep
 }
 
-/*********************************************************/
-//LoRa mode
-/*********************************************************/
-/**********************************************************
-**Name:     loraLoraMode
-**Function: Set RFM69 entry LoRa(LongRange) mode
-**Input:    None
-**Output:   None
-**********************************************************/
 void loraLoraMode( SPISlaveID id )
 {
     sx1276RegisterWrite( id, LR_RegOpMode+0x80+0x08);
 }
 
-/**********************************************************
-**Name:     loraClearAllIRQFlags
-**Function: Clear all irq
-**Input:    None
-**Output:   None
-**********************************************************/
 void loraClearAllIRQFlags( SPISlaveID id )
 {
     sx1276RegisterWrite( id, LR_RegIrqFlags+0xFF);
 }
 
-/**********************************************************
-**Name:     loraBasicConfiguration
-**Function: RFM96 base config
-**Input:    mode
-**Output:   None
-**********************************************************/
 void loraBasicConfiguration( SPISlaveID id, uint8_t mode)
 {
     uint8_t i;
@@ -138,15 +97,8 @@ void loraBasicConfiguration( SPISlaveID id, uint8_t mode)
     sx1276RegisterWrite( id, LR_RegPreambleLsb + 12);                      //RegPreambleLsb 8+4=12byte Preamble
 
     sx1276RegisterWrite( id, REG_LR_DIOMAPPING2_LONG+0x01);                     //RegDioMapping2 DIO5=00, DIO4=01
-    //loraStandbyMode(id);                                         //Entry standby mode
 }
 
-/**********************************************************
-**Name:     loraContinuousReceiveMode
-**Function: Entry Rx mode
-**Input:    None
-**Output:   None
-**********************************************************/
 void loraContinuousReceiveMode( SPISlaveID id )
 {
     uint8_t addr;
@@ -165,28 +117,6 @@ void loraContinuousReceiveMode( SPISlaveID id )
 }
 
 
-
-/**********************************************************
-**Name:     RFM96_LoRaRxPacket
-**Function: Receive data in LoRa mode
-**Input:    None
-**Output:   1- Success
-            0- Fail
-**********************************************************/
-uint8_t RFM96_LoRaRxPacket(SPISlaveID id, uint8_t *buf)
-{
-    uint8_t addr;
-    uint8_t packet_size;
-
-    addr = sx1276RegisterRead( id, (uint8_t)(LR_RegFifoRxCurrentaddr>>8));      //last packet addr 数据包的最后地址(数据的尾地址)
-    sx1276RegisterWrite( id, LR_RegFifoAddrPtr+addr);                      //RxBaseAddr -> FiFoAddrPtr
-
-    packet_size = sx1276RegisterRead( id, (uint8_t)(LR_RegRxNbBytes>>8));     //Number for received bytes
-
-    sx1276BlockRead(id, 0x00, buf, packet_size);
-
-    return packet_size;
-}
 
 
 uint8_t loraTransmitPacket_Async(SPISlaveID id, uint8_t *buf,uint8_t len)
@@ -282,10 +212,15 @@ bool loraCheckAsyncReceiveCompletion(SPISlaveID id)
 
 uint8_t loraReceivePacket( SPISlaveID id, uint8_t* buf, size_t maxBytesToReceive )
 {
-    uint8_t length = 0;
-    
     memset( &buf[0], 0xff, maxBytesToReceive );
-    length = RFM96_LoRaRxPacket( id, &buf[0] );
+
+    uint8_t addr = sx1276RegisterRead( id, (uint8_t)(LR_RegFifoRxCurrentaddr>>8)); // last packet addr
+    sx1276RegisterWrite( id, LR_RegFifoAddrPtr+addr);                      // RxBaseAddr -> FiFoAddrPtr
+
+    uint8_t length = sx1276RegisterRead( id, (uint8_t)(LR_RegRxNbBytes>>8));        // Number for received bytes
+
+    sx1276BlockRead(id, 0x00, buf, length);
+
     loraClearAllIRQFlags(id);                                //Clear irq
     
     return length;
