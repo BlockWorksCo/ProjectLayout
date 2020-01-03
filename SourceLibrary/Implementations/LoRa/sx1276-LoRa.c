@@ -73,8 +73,17 @@ void loraBasicConfiguration( SPISlaveID id, uint8_t mode)
         sx1276RegisterWrite( id, RFM96FreqTbl[i]);
     }
 
-    //setting base parameter
-    sx1276RegisterWrite( id, RFM96PowerTbl[0]);             //Setting output power parameter
+    // output power:
+    // 0x09FF,                   //20dbm
+    // 0x09FC,                   //17dbm
+    // 0x09F9,                   //14dbm
+    // 0x09F6,                   //11dbm
+
+#ifdef HIGH_POWER
+    sx1276RegisterWrite( id, 0x09f6);             // 11dbm, Setting output power parameter
+#else
+    sx1276RegisterWrite( id, 0x09ff);             // 20dbm, Setting output power parameter
+#endif
     sx1276RegisterWrite( id, LR_RegOcp+0x0B);                              //RegOcp,Close Ocp
     sx1276RegisterWrite( id, LR_RegLna+0x23);                              //RegLNA,High & LNA Enable
 
@@ -94,8 +103,6 @@ void loraBasicConfiguration( SPISlaveID id, uint8_t mode)
 void loraContinuousReceiveMode( SPISlaveID id )
 {
     uint8_t addr;
-
-    loraBasicConfiguration(id,0);                                         //setting base parameter
 
     sx1276RegisterWrite( id, 0x4D00+0x84);                                   //Normal and Rx
     sx1276RegisterWrite( id, LR_RegHopPeriod+0xFF);                          //RegHopPeriod NO FHSS
@@ -130,7 +137,7 @@ bool loraCheckAsyncTransmitForCompletion(SPISlaveID id)
         {
             // Previous transmit is now complete, clear the IRQ flags and
             // move into receive mode.
-            sx1276RegisterWrite( id, LR_RegIrqFlags+0x08);
+            sx1276RegisterWrite( id, LR_RegIrqFlags+0x08);      // clear TxDone.
             loraContinuousReceiveMode( id );
 
             return true;
@@ -172,7 +179,7 @@ uint8_t loraReceivePacket( SPISlaveID id, uint8_t* buf, size_t maxBytesToReceive
 
     sx1276BlockRead(id, 0x00, buf, length);
 
-    sx1276RegisterWrite( id, LR_RegIrqFlags+0xFF);
+    sx1276RegisterWrite( id, LR_RegIrqFlags+0x40);      // Clear RxDone.
     
     return length;
 }   
@@ -182,12 +189,15 @@ void loraTransmitPacket( SPISlaveID id, uint8_t* buf, uint8_t size )
 {
     uint8_t addr;
 
-    loraBasicConfiguration(id, 0);
+#ifdef HIGH_POWER
     sx1276RegisterWrite( id, 0x4D00+0x87);                      // 20dbm
+#else
+    sx1276RegisterWrite( id, 0x4D00+0x84);                      // 17dbm
+#endif
     sx1276RegisterWrite( id, LR_RegHopPeriod);                  // RegHopPeriod NO FHSS
     sx1276RegisterWrite( id, REG_LR_DIOMAPPING1_LONG+0x41);     // DIO0=01, DIO1=00, DIO2=00, DIO3=01
 
-    sx1276RegisterWrite( id, LR_RegIrqFlags+0xFF);
+    sx1276RegisterWrite( id, LR_RegIrqFlags+0x08);              // clear TxDone
     sx1276RegisterWrite( id, LR_RegPayloadLength+size);
 
     // reset the FIFO.
@@ -204,6 +214,7 @@ void loraTransmitPacket( SPISlaveID id, uint8_t* buf, uint8_t size )
 void radioInitialise(RadioID id)
 {
     sx1276PhysicalInterfaceInit( (SPISlaveID)id );
+    loraBasicConfiguration(id, 0);
     loraContinuousReceiveMode( (SPISlaveID)id );
 }
 
