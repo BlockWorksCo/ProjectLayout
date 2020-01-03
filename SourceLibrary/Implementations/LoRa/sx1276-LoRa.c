@@ -15,12 +15,6 @@
 #define CRC_EN   0x00  //CRC Enable
 
 
-//
-//
-//
-bool transmitInProgress_SlaveA  = false;
-bool transmitInProgress_SlaveB  = false;
-
 
 /**********************************************************
 **Parameter table define
@@ -64,10 +58,6 @@ void loraLoraMode( SPISlaveID id )
     sx1276RegisterWrite( id, LR_RegOpMode+0x80+0x08);
 }
 
-void loraClearAllIRQFlags( SPISlaveID id )
-{
-    sx1276RegisterWrite( id, LR_RegIrqFlags+0xFF);
-}
 
 void loraBasicConfiguration( SPISlaveID id, uint8_t mode)
 {
@@ -97,6 +87,8 @@ void loraBasicConfiguration( SPISlaveID id, uint8_t mode)
     sx1276RegisterWrite( id, LR_RegPreambleLsb + 12);                      //RegPreambleLsb 8+4=12byte Preamble
 
     sx1276RegisterWrite( id, REG_LR_DIOMAPPING2_LONG+0x01);                     //RegDioMapping2 DIO5=00, DIO4=01
+
+    sx1276RegisterWrite( id, LR_RegIrqFlagsMask+(~(0x40|0x08)));    // TxDone & RxDone.
 }
 
 void loraContinuousReceiveMode( SPISlaveID id )
@@ -108,8 +100,6 @@ void loraContinuousReceiveMode( SPISlaveID id )
     sx1276RegisterWrite( id, 0x4D00+0x84);                                   //Normal and Rx
     sx1276RegisterWrite( id, LR_RegHopPeriod+0xFF);                          //RegHopPeriod NO FHSS
     sx1276RegisterWrite( id, REG_LR_DIOMAPPING1_LONG+0x01);                       //DIO0=00, DIO1=00, DIO2=00, DIO3=01  DIO0=00--RXDONE
-
-    sx1276RegisterWrite( id, LR_RegIrqFlagsMask+0xBF);                       //Open RxDone interrupt
 
     addr = sx1276RegisterRead( id, (uint8_t)(LR_RegFifoRxBaseAddr>>8));           //Read RxBaseAddr
     sx1276RegisterWrite( id, LR_RegFifoAddrPtr+addr);                        //RxBaseAddr -> FiFoAddrPtr¡¡
@@ -124,16 +114,6 @@ uint8_t loraTransmitPacket_Async(SPISlaveID id, uint8_t *buf,uint8_t len)
     sx1276BlockWrite(id, 0x00, (uint8_t *)buf, len);
     sx1276RegisterWrite( id, LR_RegOpMode+0x03+0x08);                    //Tx Mode
 
-    if(id == SlaveA)
-    {
-        transmitInProgress_SlaveA   = true;
-    }
-
-    if(id == SlaveB)
-    {
-        transmitInProgress_SlaveB   = true;
-    }
-
     return len;
 }
 
@@ -143,40 +123,19 @@ uint8_t loraTransmitPacket_Async(SPISlaveID id, uint8_t *buf,uint8_t len)
 //
 bool loraCheckAsyncTransmitForCompletion(SPISlaveID id)
 {
-    if((id == SlaveA) && (transmitInProgress_SlaveA == false)) 
-    {
-        // Transmit is not in progress, so indicate that a transmit
-        // is allowed to be setup.
-        return true;
-    }
-
-    if((id == SlaveB) && (transmitInProgress_SlaveB == false)) 
-    {
-        // Transmit is not in progress, so indicate that a transmit
-        // is allowed to be setup.
-        return true;
-    }
-
     if( sx1276IsIRQPinAsserted(id) == true ) 
     {
-        // Previous transmit is now complete, clear the IRQ flags and
-        // move into receive mode.
-        sx1276RegisterRead( id, (uint8_t)(LR_RegIrqFlags>>8));
-        loraClearAllIRQFlags(id);                                //Clear irq
-        loraContinuousReceiveMode( id );
-
-        if(id == SlaveA) 
+        uint8_t irqFlags    =  sx1276RegisterRead( id, (uint8_t)(LR_RegIrqFlags>>8));
+        if( (irqFlags&0x08) != 0 )
         {
-            transmitInProgress_SlaveA   = false;
-        }
-        if(id == SlaveB) 
-        {
-            transmitInProgress_SlaveB   = false;
-        }
+            // Previous transmit is now complete, clear the IRQ flags and
+            // move into receive mode.
+            sx1276RegisterWrite( id, LR_RegIrqFlags+0x08);
+            loraContinuousReceiveMode( id );
 
-        return true;
+            return true;
+        }
     }
-
 
     return false;
 }
@@ -185,22 +144,14 @@ bool loraCheckAsyncTransmitForCompletion(SPISlaveID id)
 
 bool loraCheckAsyncReceiveCompletion(SPISlaveID id)
 {
-    if((id == SlaveA) && (transmitInProgress_SlaveA == true)) 
-    {
-        // If a transmit is in progress, we're not receiving.
-        return false;
-    }
-
-    if((id == SlaveB) && (transmitInProgress_SlaveB == true)) 
-    {
-        // If a transmit is in progress, we're not receiving.
-        return false;
-    }
-
     if ( sx1276IsIRQPinAsserted(id) == true )
     {
-        // receive-complete has been signalled.
-        return true;
+        uint8_t irqFlags    =  sx1276RegisterRead( id, (uint8_t)(LR_RegIrqFlags>>8));
+        if( (irqFlags&0x40) != 0 )
+        {
+            // receive-complete has been signalled.
+            return true;
+        }
     }
 
     return false;
@@ -221,7 +172,7 @@ uint8_t loraReceivePacket( SPISlaveID id, uint8_t* buf, size_t maxBytesToReceive
 
     sx1276BlockRead(id, 0x00, buf, length);
 
-    loraClearAllIRQFlags(id);                                //Clear irq
+    sx1276RegisterWrite( id, LR_RegIrqFlags+0xFF);
     
     return length;
 }   
@@ -236,8 +187,7 @@ void loraTransmitPacket( SPISlaveID id, uint8_t* buf, uint8_t size )
     sx1276RegisterWrite( id, LR_RegHopPeriod);                  // RegHopPeriod NO FHSS
     sx1276RegisterWrite( id, REG_LR_DIOMAPPING1_LONG+0x41);     // DIO0=01, DIO1=00, DIO2=00, DIO3=01
 
-    loraClearAllIRQFlags(id);
-    sx1276RegisterWrite( id, LR_RegIrqFlagsMask+0xF7);
+    sx1276RegisterWrite( id, LR_RegIrqFlags+0xFF);
     sx1276RegisterWrite( id, LR_RegPayloadLength+size);
 
     // reset the FIFO.
