@@ -7,6 +7,7 @@
 * 历史记录  	: 暂无
 ********************************************************************************/
 
+#include "Radio.h"
 #include "sx1276-LoRa.h"
 #include "sx1276-PhysicalInterface.h"
 #include "BoardSupport.h"
@@ -346,6 +347,34 @@ void loraTransmitPacket( SPISlaveID id, uint8_t* buf, uint8_t size )
 
     loraTransmitPacket_Async(id, buf,size);
 }   
+
+
+
+void radioInitialise(RadioID id)
+{
+    sx1276PhysicalInterfaceInit( (SPISlaveID)id );
+    loraContinuousReceiveMode( (SPISlaveID)id );
+}
+
+void radioAsyncTransmitPacket(RadioID id, uint8_t* packet, size_t numberOfBytes )
+{
+    loraTransmitPacket( (SPISlaveID)id, packet, numberOfBytes );
+}
+
+bool radioAsyncTransmitCompleted(RadioID id)
+{
+    return loraCheckAsyncTransmitForCompletion( (SPISlaveID)id );
+}
+
+uint32_t radioAsyncReceivePacket(RadioID id, uint8_t* packet, size_t maxPacketSize )
+{
+    return loraReceivePacket( (SPISlaveID)id, packet, maxPacketSize );
+}
+
+bool radioAsyncReceiveCompleted(RadioID id)
+{
+    return loraCheckAsyncReceiveCompletion( (SPISlaveID)id );
+}
 
 
 
